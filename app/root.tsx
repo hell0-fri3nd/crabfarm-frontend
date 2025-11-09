@@ -35,11 +35,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-              <ThemeProvider
+        <ThemeProvider
         defaultTheme="dark" storageKey="vite-ui-theme"
         >
-          <Bubbles count={2} />
-  {children}
+          <Bubbles count={30}/>
+          {children}
         </ThemeProvider>
       
         <ScrollRestoration />
