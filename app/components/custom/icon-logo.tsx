@@ -1,6 +1,6 @@
 
 import type { ImgHTMLAttributes } from "react";
-import App_Logo from "../../assets/images/app_logo.png";
+import App_Logo from "../../assets/images/crabfarm_icon.jpg";
 
 interface IconLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
   src?: string;
