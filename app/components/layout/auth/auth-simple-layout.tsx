@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router';
-import IconLogo from '../custom/icon-logo';
+import IconLogo from '../../custom/icon-logo';
 
 interface AuthLayoutProps {
     children: React.ReactNode;

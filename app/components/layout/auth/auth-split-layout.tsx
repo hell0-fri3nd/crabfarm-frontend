@@ -1,5 +1,5 @@
 import React from 'react'
-import IconLogo from '../custom/icon-logo';
+import IconLogo from '../../custom/icon-logo';
 
 
 interface AuthLayoutProps {

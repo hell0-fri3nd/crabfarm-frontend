@@ -1,6 +1,6 @@
 import React from 'react'
-import AuthSplitLayout from '~/components/layout/auth-split-layout';
-import AuthSimpleLayout from '~/components/layout/auth-simple-layout';
+import AuthSplitLayout from '~/components/layout/auth/auth-split-layout';
+import AuthSimpleLayout from '~/components/layout/auth/auth-simple-layout';
 import { 
   Input, 
   Button, 

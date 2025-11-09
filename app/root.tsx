@@ -36,7 +36,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider
-        defaultTheme="dark" storageKey="vite-ui-theme"
+        defaultTheme="light" storageKey="vite-ui-theme"
         >
           <Bubbles count={30}/>
           {children}
@@ -71,13 +71,16 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
     <main className="pt-16 p-4 container mx-auto">
+      <Bubbles count={30}/>
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
         <pre className="w-full p-4 overflow-x-auto">
           <code>{stack}</code>
+
         </pre>
       )}
+                <footer> hellofriend 2025</footer>
     </main>
   );
 }
