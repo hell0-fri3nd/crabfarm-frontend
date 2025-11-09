@@ -11,6 +11,8 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { ThemeProvider } from "./components/theme-provider";
 import Bubbles from "./components/custom/bubbles";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -35,15 +37,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <ThemeProvider
-        defaultTheme="light" storageKey="vite-ui-theme"
-        >
-          <Bubbles count={30}/>
-          {children}
-        </ThemeProvider>
-      
-        <ScrollRestoration />
-        <Scripts />
+
+        <Provider store={store}>
+          <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+            <Bubbles count={30}/>
+            {children}
+          </ThemeProvider>
+        
+          <ScrollRestoration />
+          <Scripts />
+        </Provider>
+
       </body>
     </html>
   );
