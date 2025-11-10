@@ -12,7 +12,9 @@ import "./app.css";
 import { ThemeProvider } from "./components/theme-provider";
 import Bubbles from "./components/custom/bubbles";
 import { Provider } from "react-redux";
-import { store } from "./store/store";
+import { store,persistor  } from "./store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { Loading } from "./components/ui/loading";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -27,6 +29,14 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+const loadingMarkup = (
+  <div className="fixed inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-50">
+    <div >
+      <Loading className="scale-90"/>
+    </div>
+  </div>
+);
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -37,13 +47,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-
-        <Provider store={store}>
-          <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-            <Bubbles count={30}/>
-            {children}
-          </ThemeProvider>
         
+        <Provider store={store}>
+          <PersistGate loading={loadingMarkup} persistor={persistor}>
+            <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+              <Bubbles count={30}/>
+              {children}
+            </ThemeProvider>
+          </PersistGate>
           <ScrollRestoration />
           <Scripts />
         </Provider>
