@@ -8,7 +8,15 @@ import type { BreadcrumbItem } from '~/types';
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Dashboard',
-    href: '/dashboard',
+    href: '/',
+  },
+  {
+    title: 'Logs',
+    href: '/page/logs',
+  },
+  {
+    title: 'Weigh and Snap',
+    href: '/page/weigh-and-snap',
   }
 ];
 
