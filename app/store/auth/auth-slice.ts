@@ -52,10 +52,24 @@ export const login = createAsyncThunk<User, LoginPayload, { rejectValue: string 
     }
 );
 
+export const logout = createAsyncThunk(
+    'auth/logout', 
+    async (_,thunkAPI) => {
+        try {
+            await api.post('/auth/logout');
+            return true;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue("Logout failed");
+        }
+    }
+);
+
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers: {},
+    reducers: {
+        clearAuth: () => initialState
+    },
     extraReducers: (builder) => {
         builder
         .addCase(login.pending, (state) => {
@@ -75,8 +89,12 @@ export const authSlice = createSlice({
         .addCase(login.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.payload || 'Login failed';
+        })
+        .addCase(logout.fulfilled, (state) => {
+            return initialState;  // reset state
         });
     },
 });
 
 export default authSlice.reducer;
+export const { clearAuth } = authSlice.actions;

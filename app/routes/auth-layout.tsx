@@ -14,7 +14,7 @@ export function meta({}: Route.MetaArgs) {
 const AuthLayout = () => {
   return (
     <AuthSimpleLayout title='CrabFarm' description='Aquaculture Management System'>
-        <Outlet />
+      <Outlet />
     </AuthSimpleLayout>
   )
 }
