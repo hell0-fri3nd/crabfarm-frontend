@@ -2,6 +2,7 @@ import React from 'react'
 import type { Route } from '../+types/';
 import AuthSimpleLayout from '~/components/layout/auth/auth-simple-layout'
 import { Outlet } from 'react-router';
+import ProtectedRoutes , { DefaultRoutes } from '~/components/layout/protected-routes';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -13,9 +14,11 @@ export function meta({}: Route.MetaArgs) {
 
 const AuthLayout = () => {
   return (
-    <AuthSimpleLayout title='CrabFarm' description='Aquaculture Management System'>
-      <Outlet />
-    </AuthSimpleLayout>
+    <DefaultRoutes>
+      <AuthSimpleLayout title='CrabFarm' description='Aquaculture Management System'>
+        <Outlet />
+      </AuthSimpleLayout>
+    </DefaultRoutes>
   )
 }
 

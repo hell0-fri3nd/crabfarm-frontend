@@ -29,4 +29,23 @@ const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
   return children;
 }
 
+export const DefaultRoutes = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, user, status,error } = useSelector((state: RootState) => state.auth);
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (isAuthenticated) {
+    return (
+      <Navigate 
+        to="/page/" 
+        replace
+      />
+    );
+  }
+
+  return children;
+}
+
 export default ProtectedRoutes
