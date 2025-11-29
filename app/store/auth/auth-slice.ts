@@ -12,6 +12,7 @@ interface User {
     user: string;
     email: string;   
     roles: string;
+    access_token: string;
 }
 
 interface AuthState {
@@ -29,23 +30,31 @@ const initialState: AuthState = {
 }
 
 export const login = createAsyncThunk<User, LoginPayload, { rejectValue: string }>(
-    'auth/login',
+    'auth-slice/login',
     async ({ email, password, remember_me}, thunkAPI) => {
         try {
 
             const response = await api.post('/auth/login', { email, password, remember_me});
 
             const userData: User = {
-                message: response.data.message,
-                user: response.data.user,
-                email: response.data.email,
-                roles: response.data.roles,
+                message: response.data.detail,
+                user: response.data.data.name,
+                email: response.data.data.email,
+                roles: response.data.data.role,
+                access_token: response.data.access_token,
             };
 
             return userData;
 
 
         } catch (error: any) {
+
+            if (!error.response) {
+                // If there is no response object, it's a network issue
+                const networkErrorMessage = 'Cannot connect to the server. Please check your internet connection or try again later.';
+                return thunkAPI.rejectWithValue(networkErrorMessage);
+            }
+
             const message = error?.response?.data?.message || 'Login failed';
             return thunkAPI.rejectWithValue(message);
         }
@@ -53,7 +62,7 @@ export const login = createAsyncThunk<User, LoginPayload, { rejectValue: string 
 );
 
 export const logout = createAsyncThunk(
-    'auth/logout', 
+    'auth-slice/logout', 
     async (_,thunkAPI) => {
         try {
             await api.post('/auth/logout');
@@ -83,11 +92,15 @@ export const authSlice = createSlice({
                 user: action.payload.user, // maps correctly
                 email: action.payload.email,
                 roles: action.payload.roles,
-                message: action.payload.message
-            };
+                message: action.payload.message,
+                access_token: action.payload.access_token,
+            }
+            state.error = null;
         })
         .addCase(login.rejected, (state, action) => {
             state.status = 'failed';
+            state.isAuthenticated = false;  // <--- ADD THIS
+            state.user = null;              // <--- AND THIS
             state.error = action.payload || 'Login failed';
         })
         .addCase(logout.fulfilled, (state) => {

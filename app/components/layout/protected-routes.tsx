@@ -1,13 +1,18 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { Navigate, useLocation } from 'react-router';
+import { Navigate } from 'react-router';
 import type { RootState } from '../../store/store';
 
 const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user, status } = useSelector((state: RootState) => state.auth);
-  const location = useLocation()
+  const { isAuthenticated, user, status,error } = useSelector((state: RootState) => state.auth);
+  // const location = useLocation()
 
-  console.log("ProtectedRoutes - isAuthenticated:", isAuthenticated, "user:", user, "status:", status);
+  // console.log("ProtectedRoutes - isAuthenticated:", isAuthenticated);
+  // console.log("user:", user);
+  // console.log("status:", status);
+  // console.log("error:", error);
+
+
   if (status === 'loading') {
     return <div>Loading...</div>;
   }
