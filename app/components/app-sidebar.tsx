@@ -3,9 +3,11 @@ import NavFooter from '~/components/nav-footer';
 import NavMain from '~/components/nav-main';
 import NavUser from '~/components/nav-user';
 import { 
-    BookOpen, 
-    Folder, 
-    LayoutGrid
+    LayoutGrid,
+    Camera,
+    Logs,
+    ClipboardClock,
+    UserCog
 } from 'lucide-react';
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '~/components/ui/sidebar';
@@ -17,22 +19,32 @@ import type { NavItem } from '../types';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: '/',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Logs',
+        href: '/page/logs',
+        icon: Logs,
+    },
+    {
+        title: 'Weigh and Snap',
+        href: '/page/weigh-and-snap',
+        icon: Camera,
     }
 ];
 
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
+        title: 'Controller`s Shedule',
+        href: '/settings/controllers-shedule',
+        icon: ClipboardClock,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'User Management',
+        href: '/settings/users-settings',
+        icon: UserCog,
     },
 ];
 

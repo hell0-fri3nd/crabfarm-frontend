@@ -5,16 +5,19 @@ import UserInfo from './user-info';
 import UserMenuContent from './user-menu-content';
 import { useIsMobile } from '../hooks/use-mobile';
 // import { type SharedData } from '../types/index';
-import { useLocation } from 'react-router';
+// import { useLocation } from 'react-router';
 import { ChevronsUpDown } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../store/store';
 
 const NavUser = () => {
 
+    const { user } = useSelector((state: RootState) => state.auth);
+
     const auth = {
         user: {
-            id: 1,
-            name: 'Hello Friend',
-            email: 'hellofriend@gmail.com',
+            name: user?.user,
+            email: user?.email || '',
             avatar: "",
             email_verified_at: true,
             created_at: '',
