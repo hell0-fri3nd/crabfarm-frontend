@@ -30,7 +30,8 @@ const LoginIndex = () => {
     try {
       e.preventDefault(); 
       const result = await dispatch(login({ email: user.email, password: user.password, remember_me: false }));
-      console.log("Login succeeded:", result);
+      // console.log("Login succeeded:", result.payload?.message || '');
+      // alert("Login succeeded:", result.payload?.message || '');
       navigate('/page');
 
     } catch (err: unknown) {
