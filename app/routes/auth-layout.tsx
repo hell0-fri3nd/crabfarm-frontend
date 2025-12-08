@@ -3,7 +3,7 @@ import type { Route } from '../+types/';
 import AuthSimpleLayout from '~/components/layout/auth/auth-simple-layout'
 import { Outlet } from 'react-router';
 import ProtectedRoutes , { DefaultRoutes } from '~/components/layout/protected-routes';
-import Footer from '~/components/custom/footer';
+import Footer from '~/routes/footer';
 
 export function meta({}: Route.MetaArgs) {
   return [

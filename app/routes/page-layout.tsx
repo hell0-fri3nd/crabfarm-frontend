@@ -4,7 +4,7 @@ import { Outlet } from 'react-router';
 import AppLayout from '~/components/layout/app-layout';
 import Bubbles from "~/components/custom/bubbles";
 import type { BreadcrumbItem } from '~/types';
-import Footer from '~/components/custom/footer';
+import Footer from '~/routes/footer';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
