@@ -1,30 +1,129 @@
 
 
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
+import { ChartNoAxesCombined, Circle, Droplet } from 'lucide-react';
 import { PlaceholderPattern } from '~/components/placeholder-pattern';
+import { Button, Input, Label } from '~/components/ui';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 
 const Dashbooard = () => {
-    return (
+  return (
+    <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+      <Tabs defaultValue="sensors">
+
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <div className="grid auto-rows-min gap-4 md:grid-cols-3">
 
-                <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                </div>
-                <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                </div>
-                <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                </div>
-                
-            </div>
+          <div className="grid auto-rows-min gap-4 sm:grid-cols-5">
 
-            
-            <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-            </div>
+            <TabsList >
+
+              <div className="grid auto-rows-min gap-2 sm:grid-cols-2">
+    
+                <TabsTrigger
+                value="sensors"
+                className="
+                  flex items-center gap-2 px-4 py-2 rounded-md 
+                  data-[state=active]:bg-primary data-[state=active]:text-primary-foreground 
+                  data-[state=active]:shadow-sm transition-all
+                  relative
+                ">
+                  <Droplet className="w-4 h-4" />
+                  <span>Sensors</span>
+                  <span
+                  className="
+                    absolute bottom-0 left-0 right-0 h-[2px] 
+                    bg-primary rounded-full 
+                    opacity-0 data-[state=active]:opacity-100 transition-opacity
+                  "/>
+                </TabsTrigger>
+
+                <TabsTrigger
+                value="predictions"
+                className="
+                  flex items-center gap-2 px-4 py-2 rounded-md 
+                  data-[state=active]:bg-primary data-[state=active]:text-primary-foreground 
+                  data-[state=active]:shadow-sm transition-all
+                  relative
+                ">
+                  <ChartNoAxesCombined className="w-7 h-7" />
+                  <span>Predictions</span>
+                  <span
+                  className="
+                    absolute bottom-0 left-0 right-0 h-[2px] 
+                    bg-primary rounded-full 
+                    opacity-0 data-[state=active]:opacity-100 transition-opacity
+                  "/>
+                </TabsTrigger>
+              
+              </div>
+            </TabsList> 
+
+          </div>
+
+          <div className="grid auto-rows-min gap-4 sm:grid-cols-1">
+
+            <TabsContent value="sensors">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"> 
+                    <Circle className="h-3 w-3 bg-green-500 text-green-500 rounded-full p-1" /> 
+                    Sensor Data
+                  </CardTitle>
+                  <CardDescription>
+                    Realtime time update sensor data from all connected devices.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-2">
+          
+                  <div className="flex h-full flex-1 flex-col gap-0 rounded-xl overflow-x-auto">
+                    <div className="grid auto-rows-min gap-2 sm:grid-cols-5">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>🌡️</CardTitle>
+                          <CardDescription>
+                            Temperature
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="grid gap-6">
+                            0.0 °C
+                        </CardContent>
+                        <CardFooter>
+                          progress bar
+                        </CardFooter>
+                      </Card>
+                    </div>
+                  </div>
+
+                </CardContent>
+              </Card>
+
+            </TabsContent>
+
+            <TabsContent value="predictions">
+      
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Prediction</CardTitle>
+                    <CardDescription>
+                      to followup
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid gap-6">
+                    coming soon...
+                  </CardContent>
+                  <CardFooter>
+                    404
+                  </CardFooter>
+                </Card>
+            </TabsContent>
+          </div>
+
         </div>
-    )
+
+      </Tabs>
+    </div>
+  )
 }
 
 export default Dashbooard
