@@ -11,7 +11,7 @@ const DefaultRouting = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  const from = location.state?.from?.pathname || "/page/";
+  const from = location.state?.from?.pathname || "/page/dashboard";
   return <Navigate to={from} replace />;
 }
 
