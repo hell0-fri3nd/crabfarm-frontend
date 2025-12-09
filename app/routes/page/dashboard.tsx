@@ -2,9 +2,10 @@
 
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
-import { ChartNoAxesCombined, Circle, Droplet } from 'lucide-react';
-import { PlaceholderPattern } from '~/components/placeholder-pattern';
-import { Button, Input, Label } from '~/components/ui';
+import { Biohazard, ChartNoAxesCombined, Circle, Cloud, CloudFog, Droplet, Droplets, FlaskConical, SprayCan, ThermometerSun, Wind } from 'lucide-react';
+import OnlineStatus from '~/components/online-status';
+// import { PlaceholderPattern } from '~/components/placeholder-pattern';
+// import { Button, Input, Label } from '~/components/ui';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 
 const Dashbooard = () => {
@@ -67,7 +68,7 @@ const Dashbooard = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2"> 
-                    <Circle className="h-3 w-3 bg-green-500 text-green-500 rounded-full p-1" /> 
+                    <OnlineStatus status={false} />
                     Sensor Data
                   </CardTitle>
                   <CardDescription>
@@ -80,7 +81,9 @@ const Dashbooard = () => {
                     <div className="grid auto-rows-min gap-2 sm:grid-cols-5">
                       <Card>
                         <CardHeader>
-                          <CardTitle>🌡️</CardTitle>
+                          <CardTitle>
+                            <ThermometerSun />
+                          </CardTitle>
                           <CardDescription>
                             Temperature
                           </CardDescription>
