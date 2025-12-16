@@ -7,6 +7,7 @@ import OnlineStatus from '~/components/online-status';
 // import { PlaceholderPattern } from '~/components/placeholder-pattern';
 // import { Button, Input, Label } from '~/components/ui';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
+import SensorCard from '~/components/sensor-card';
 
 const Dashbooard = () => {
   return (
@@ -65,6 +66,7 @@ const Dashbooard = () => {
           <div className="grid auto-rows-min gap-4 sm:grid-cols-1">
 
             <TabsContent value="sensors">
+
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2"> 
@@ -79,22 +81,9 @@ const Dashbooard = () => {
           
                   <div className="flex h-full flex-1 flex-col gap-0 rounded-xl overflow-x-auto">
                     <div className="grid auto-rows-min gap-2 sm:grid-cols-5">
-                      <Card>
-                        <CardHeader>
-                          <CardTitle>
-                            <ThermometerSun />
-                          </CardTitle>
-                          <CardDescription>
-                            Temperature
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="grid gap-6">
-                            0.0 °C
-                        </CardContent>
-                        <CardFooter>
-                          progress bar
-                        </CardFooter>
-                      </Card>
+                      
+                      <SensorCard Icon={ThermometerSun} description='Temperature' value='39 °C' />
+
                     </div>
                   </div>
 
