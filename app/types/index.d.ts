@@ -32,9 +32,16 @@ export interface SharedData {
 }
 
 export interface User {
-
     name: string | '';
     email: string | null;
     avatar?: string;
     roles?: string | '';
+}
+
+export interface SensorData {
+  Icon: LucideIcon;
+  description: string;
+  value: string | number;
+  rangesDescription: string;
+  percentage: number;
 }

@@ -8,6 +8,52 @@ import OnlineStatus from '~/components/online-status';
 // import { Button, Input, Label } from '~/components/ui';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 import SensorCard from '~/components/sensor-card';
+import type { SensorData } from '~/types';
+
+const dummySensorData: SensorData[] = [
+  {
+    Icon: ThermometerSun,
+    description: 'Temperature',
+    value: "28.50°C",
+    rangesDescription: 'Range: 0 - 40 °C',
+    percentage: (28.5 / 40) * 100,
+  },
+  {
+    Icon: Droplet,
+    description: 'pH Level',
+    value: "7.20",
+    rangesDescription: 'Range: 0 - 14',
+    percentage: (7.2 / 14) * 100,
+  },
+  {
+    Icon: Droplets,
+    description: 'Salinity (PSU)',
+    value: "35.20 PSU",
+    rangesDescription: 'Range: 0 - 40 PSU',
+    percentage: (35.2 / 40) * 100,
+  },
+  {
+    Icon: FlaskConical,
+    description: 'Ammonia',
+    value: "0.02 mg/L",
+    rangesDescription: 'Range: 0 - 1 mg/L',
+    percentage: (0.02 / 1) * 100,
+  },
+  {
+    Icon: Wind,
+    description: 'Dissolved Oxygen',
+    value: "7.50 mg/L",
+    rangesDescription: 'Range: 0 - 15 mg/L',
+    percentage: (7.5 / 15) * 100,
+  },
+  {
+    Icon: Biohazard,
+    description: 'TDS (Total Dissolved Solids)',
+    value: "1850.00 ppm",
+    rangesDescription: 'Range: 0 - 2500 ppm',
+    percentage: (1850 / 2500) * 100,
+  }
+];
 
 const Dashbooard = () => {
   return (
@@ -80,9 +126,18 @@ const Dashbooard = () => {
                 <CardContent className="grid gap-2">
           
                   <div className="flex h-full flex-1 flex-col gap-0 rounded-xl overflow-x-auto">
-                    <div className="grid auto-rows-min gap-2 sm:grid-cols-5">
+                    <div className="grid auto-rows-min gap-2 sm:grid-cols-3">
                       
-                      <SensorCard Icon={ThermometerSun} description='Temperature' value='39 °C' />
+                      {dummySensorData.map((sensor, index) => (
+                        <SensorCard
+                          key={index}
+                          Icon={sensor.Icon}
+                          description={sensor.description}
+                          value={sensor.value}
+                          rangesDescription={sensor.rangesDescription}
+                          percentage={sensor.percentage}
+                        />
+                      ))}
 
                     </div>
                   </div>
