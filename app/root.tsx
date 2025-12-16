@@ -9,6 +9,12 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { ThemeProvider } from "./components/theme-provider";
+import Bubbles from "./components/custom/bubbles";
+import { Provider } from "react-redux";
+import { store,persistor  } from "./store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import InfiniteProgressBar from "./components/infinite-progress"
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -23,6 +29,14 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+const loadingMarkup = (
+  <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50">
+    <div >
+      <InfiniteProgressBar className="scale-90"/>
+    </div>
+  </div>
+);
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -33,9 +47,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+        
+        <Provider store={store}>
+          <PersistGate loading={loadingMarkup} persistor={persistor}>
+            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+              <Bubbles count={30}/>
+              {children}
+            </ThemeProvider>
+          </PersistGate>
+          <ScrollRestoration />
+          <Scripts />
+        </Provider>
+
       </body>
     </html>
   );
@@ -63,13 +86,16 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
     <main className="pt-16 p-4 container mx-auto">
+      <Bubbles count={30}/>
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
         <pre className="w-full p-4 overflow-x-auto">
           <code>{stack}</code>
+
         </pre>
       )}
+                <footer> hellofriend 2025</footer>
     </main>
   );
 }
