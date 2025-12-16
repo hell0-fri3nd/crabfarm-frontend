@@ -32,7 +32,7 @@ const LoginIndex = () => {
       const result = await dispatch(login({ email: user.email, password: user.password, remember_me: false }));
       // console.log("Login succeeded:", result.payload?.message || '');
       // alert("Login succeeded:", result.payload?.message || '');
-      navigate('/page');
+      navigate('/page/dashboard');
 
     } catch (err: unknown) {
       setErrors({...errors, password:  "Invalid email or password"});
