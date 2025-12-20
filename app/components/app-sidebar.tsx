@@ -19,7 +19,7 @@ import type { NavItem } from '../types';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/',
+        href: '/page/dashboard',
         icon: LayoutGrid,
     },
     {
@@ -56,7 +56,7 @@ const AppSidebar = () => {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link to="/dashboard">
+                            <Link to="/page/">
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -66,7 +66,6 @@ const AppSidebar = () => {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} name="Main" />
-                {/* <NavMain items={employeeNavItems} name="Employee Management" /> */}
             </SidebarContent>
 
             <SidebarFooter>

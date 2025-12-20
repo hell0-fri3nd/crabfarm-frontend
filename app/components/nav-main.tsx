@@ -5,6 +5,7 @@ import { Link,useLocation } from 'react-router';
 
 const NavMain = ({ items = [], name }: { items: NavItem[], name?: string }) => {
     const page = useLocation();
+
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>{name}</SidebarGroupLabel>
@@ -13,7 +14,7 @@ const NavMain = ({ items = [], name }: { items: NavItem[], name?: string }) => {
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild isActive={page.pathname.startsWith(item.href)} tooltip={{ children: item.title }}>
                             <Link to={item.href} >
-                                {item.icon && <item.icon />}
+                                {item.icon && <item.icon/>}
                                 <span>{item.title}</span>
                             </Link>
                         </SidebarMenuButton>
