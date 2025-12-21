@@ -1,7 +1,7 @@
 
 
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Biohazard, ChartNoAxesCombined, Circle, Cloud, CloudFog, Droplet, Droplets, FlaskConical, SprayCan, ThermometerSun, Wind } from 'lucide-react';
 import OnlineStatus from '~/components/online-status';
 // import { PlaceholderPattern } from '~/components/placeholder-pattern';
@@ -9,6 +9,7 @@ import OnlineStatus from '~/components/online-status';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 import SensorCard from '~/components/sensor-card';
 import type { SensorData } from '~/types';
+import CardTemplate from "~/components/card-template";
 
 const dummySensorData: SensorData[] = [
   {
@@ -58,111 +59,55 @@ const dummySensorData: SensorData[] = [
 const Dashbooard = () => {
   return (
     <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+
       <Tabs defaultValue="sensors">
 
-        <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+        <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-0 overflow-x-auto">
 
-          <div className="grid auto-rows-min gap-4 sm:grid-cols-5">
+            <TabsList className="w-full sm:w-1/4 grid grid-cols-2 sm:grid-cols-2">
+              <TabsTrigger value="sensors">
+                <Droplet className="w-4 h-4" />
+                <span>Sensors</span>
+              </TabsTrigger>
 
-            <TabsList >
-
-              <div className="grid auto-rows-min gap-2 sm:grid-cols-2">
-    
-                <TabsTrigger
-                value="sensors"
-                className="
-                  flex items-center gap-2 px-4 py-2 rounded-md 
-                  data-[state=active]:bg-primary data-[state=active]:text-primary-foreground 
-                  data-[state=active]:shadow-sm transition-all
-                  relative
-                ">
-                  <Droplet className="w-4 h-4" />
-                  <span>Sensors</span>
-                  <span
-                  className="
-                    absolute bottom-0 left-0 right-0 h-[2px] 
-                    bg-primary rounded-full 
-                    opacity-0 data-[state=active]:opacity-100 transition-opacity
-                  "/>
-                </TabsTrigger>
-
-                <TabsTrigger
-                value="predictions"
-                className="
-                  flex items-center gap-2 px-4 py-2 rounded-md 
-                  data-[state=active]:bg-primary data-[state=active]:text-primary-foreground 
-                  data-[state=active]:shadow-sm transition-all
-                  relative
-                ">
+              <TabsTrigger value="predictions">
                   <ChartNoAxesCombined className="w-7 h-7" />
                   <span>Predictions</span>
-                  <span
-                  className="
-                    absolute bottom-0 left-0 right-0 h-[2px] 
-                    bg-primary rounded-full 
-                    opacity-0 data-[state=active]:opacity-100 transition-opacity
-                  "/>
                 </TabsTrigger>
-              
-              </div>
             </TabsList> 
-
-          </div>
 
           <div className="grid auto-rows-min gap-4 sm:grid-cols-1">
 
             <TabsContent value="sensors">
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2"> 
-                    <OnlineStatus status={false} />
-                    Sensor Data
-                  </CardTitle>
-                  <CardDescription>
-                    Realtime time update sensor data from all connected devices.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-2">
-          
-                  <div className="flex h-full flex-1 flex-col gap-0 rounded-xl overflow-x-auto">
-                    <div className="grid auto-rows-min gap-2 sm:grid-cols-3">
-                      
-                      {dummySensorData.map((sensor, index) => (
-                        <SensorCard
-                          key={index}
-                          Icon={sensor.Icon}
-                          description={sensor.description}
-                          value={sensor.value}
-                          rangesDescription={sensor.rangesDescription}
-                          percentage={sensor.percentage}
-                        />
-                      ))}
-
-                    </div>
+              <CardTemplate description="Realtime time update sensor data from all connected devices." status={false} >
+                <div className="flex h-full flex-1 flex-col gap-0 rounded-xl overflow-x-auto">
+                  <div className="grid auto-rows-min gap-2 sm:grid-cols-3">
+                    {dummySensorData.map((sensor, index) => (
+                      <SensorCard
+                      key={index}
+                      Icon={sensor.Icon}
+                      description={sensor.description}
+                      value={sensor.value}
+                      rangesDescription={sensor.rangesDescription}
+                      percentage={sensor.percentage}
+                      />
+                    ))}
                   </div>
-
-                </CardContent>
-              </Card>
+                </div>
+              </CardTemplate>
 
             </TabsContent>
 
             <TabsContent value="predictions">
-      
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Prediction</CardTitle>
-                    <CardDescription>
-                      to followup
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="grid gap-6">
-                    coming soon...
-                  </CardContent>
-                  <CardFooter>
-                    404
-                  </CardFooter>
-                </Card>
+
+              <CardTemplate 
+              description="Predictive analytics of crab width and weight based on data on previous days and months." 
+              status={false} 
+              footerText="404">
+                Coming soon...
+              </CardTemplate>
+  
             </TabsContent>
           </div>
 
