@@ -26,7 +26,9 @@ const QRCode = ({text}: {text: string}) => {
     }, [text]);
 
     return (
-        <div ref={qrRef} />
+        <div className="inline-block overflow-hidden rounded-xl shadow-lg">
+            <div ref={qrRef} />
+        </div>
     );
 };
 

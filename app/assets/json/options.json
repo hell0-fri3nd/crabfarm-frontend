@@ -1,8 +1,8 @@
 {
   "type": "canvas",
   "shape": "square",
-  "width": 300,
-  "height": 300,
+  "width": 250,
+  "height": 250,
   "margin": 10,
   "qrOptions": {
     "typeNumber": "0",
@@ -58,7 +58,7 @@
     }
   },
   "cornersDotOptions": {
-    "type": "",
+    "type": "dot",
     "color": "#14211c"
   },
   "cornersDotOptionsHelper": {
