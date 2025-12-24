@@ -2,8 +2,10 @@ import React from 'react'
 import { Card } from './ui/card'
 import { Download, ImageIcon, QrCode } from 'lucide-react'
 import { Button, Input, Label} from './ui'
+import QRCode from './custom/qr-code'
 
 const QrCodeGenerator = () => {
+    const [ text, setText ] = React.useState('');
     return (
         <Card className="overflow-hidden border">
             <div className="p-6">
@@ -16,18 +18,20 @@ const QrCodeGenerator = () => {
                 </h2>
 
                 <div className="space-y-4">
-
+                    
                     <div className="overflow-hidden rounded-lg border bg-muted p-4">
-                        {/* <img
+                        
+                        { text == '' &&                         
+                            <div className="flex flex-col items-center justify-center h-48 w-full">
+                                <ImageIcon className="mx-auto h-8 w-8 text-muted-foreground/40 mb-2" />
+                                <p className="text-sm text-muted-foreground">Camera is not loaded</p>
+                            </div>
+                        }
+                        
+                        { text != '' && 
+                            <QRCode text={text}/> 
+                        }
 
-                            alt="Uploaded preview"
-                            className="h-48 w-full object-cover"
-                        /> */}
-
-                        <div className="flex flex-col items-center justify-center h-48 w-full">
-                            <ImageIcon className="mx-auto h-8 w-8 text-muted-foreground/40 mb-2" />
-                            <p className="text-sm text-muted-foreground">Camera is not loaded</p>
-                        </div>
                     </div>
 
 
@@ -39,6 +43,7 @@ const QrCodeGenerator = () => {
                         id="crab-input"
                         placeholder="Enter Crab Name"
                         className="h-10"
+                        onChange={(e)=>setText(e.target.value)}
                         />
                     </div>
                                 
