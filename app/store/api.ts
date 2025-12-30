@@ -8,4 +8,13 @@ const api = axios.create({
     },
 });
 
+export const raspberry_api = axios.create({
+    baseURL: import.meta.env.VITE_API_RASPBERRY_URL,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+
 export default api;
