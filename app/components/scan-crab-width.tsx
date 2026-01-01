@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card } from './ui/card'
-import { ImageIcon, Save, ScanQrCode } from 'lucide-react'
+import { ImageIcon, Loader2, Save, ScanQrCode } from 'lucide-react'
 import { Button, Input, Label } from './ui'
 import type { AppDispatch, RootState } from '~/store/store'
 import { useDispatch, useSelector } from 'react-redux'
@@ -8,11 +8,30 @@ import { status,start } from '~/store/camera-slice'
 
 const ScanCrabWidth = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const [statusDetails, setStatusDetails] = React.useState({
+        camera_status: false,
+        pending: false,
+        camera_url: ``
+    });
     const { data, error } = useSelector((state: RootState) => state.camera);
 
     React.useEffect(() => {
         const fetchStatus = async () => {
             await dispatch(status());
+            setStatusDetails({
+                ...statusDetails,
+                camera_status: true
+            });
+
+            if (error === 'TOKEN_EXPIRED') {
+                setStatusDetails({ 
+                    ...statusDetails, 
+                    pending: false,
+                    camera_status: false,
+                    camera_url: ``
+                });
+            }
+            console.log(error);
         };
         fetchStatus();
 
@@ -23,9 +42,29 @@ const ScanCrabWidth = () => {
     const startCamera = async (e: React.SyntheticEvent) => {
         try {
             e.preventDefault(); 
+            setStatusDetails({ 
+                ...statusDetails, 
+                pending: true,
+                camera_status: false,
+                camera_url: ""
+            });
             const result = await dispatch(start());
+            // console.log(result);
         } catch (err: unknown) {
             console.error('Login failed:', err);
+            setStatusDetails({ 
+                ...statusDetails, 
+                pending: false,
+                camera_status: false,
+                camera_url: ``
+            });
+        } finally {
+            setStatusDetails({ 
+                ...statusDetails, 
+                pending: false,
+                camera_status: true,
+                camera_url: `http://192.168.100.11:4573/camera/stream`
+            });
         }
     };
 
@@ -50,11 +89,11 @@ const ScanCrabWidth = () => {
                         <div className="flex flex-col items-center justify-center h-full w-full">
 
                             {
-                                data?.camera_status ? (     
+                                statusDetails.camera_status ? (     
                                     <img
                                     alt="Uploaded preview"
                                     className="h-full w-full object-cover"
-                                    src="http://192.168.100.11:4573/camera/stream"
+                                    src={statusDetails.camera_url}
                                     />
                                 ) : (
                                     <div>
@@ -68,9 +107,15 @@ const ScanCrabWidth = () => {
                     </div>
                                 
                     <div className="flex w-full justify-center md:justify-end">
-                        <Button variant="outline" onClick={startCamera}>
-                            <ScanQrCode className="h-4 w-4" />
-                            Scan QR Code
+                        <Button variant="outline" onClick={startCamera} disabled={data?.camera_status}>
+                            {
+                                statusDetails.pending ? (
+                                    <Loader2 className="animate-spin" />
+                                ) : (
+                                    <ScanQrCode className="h-4 w-4" />
+                                )
+                            }
+                            {statusDetails.pending ? "" : "Scan QR Code"}
                         </Button>
                     </div>
 
