@@ -12,7 +12,6 @@ interface User {
     user: string;
     email: string;   
     roles: string;
-    access_token: string;
 }
 
 interface AuthState {
@@ -41,7 +40,6 @@ export const login = createAsyncThunk<User, LoginPayload, { rejectValue: string 
                 user: response.data.data.name,
                 email: response.data.data.email,
                 roles: response.data.data.role,
-                access_token: response.data.access_token,
             };
 
             return userData;
@@ -55,7 +53,7 @@ export const login = createAsyncThunk<User, LoginPayload, { rejectValue: string 
                 return thunkAPI.rejectWithValue(networkErrorMessage);
             }
 
-            const message = error?.response?.data?.message || 'Login failed';
+            const message = error?.response.data?.detail || 'Login failed';
             return thunkAPI.rejectWithValue(message);
         }
     }
@@ -89,22 +87,21 @@ export const authSlice = createSlice({
             state.status = 'succeeded';
             state.isAuthenticated = true;
             state.user = {
-                user: action.payload.user, // maps correctly
+                user: action.payload.user, 
                 email: action.payload.email,
                 roles: action.payload.roles,
-                message: action.payload.message,
-                access_token: action.payload.access_token,
+                message: action.payload.message
             }
             state.error = null;
         })
         .addCase(login.rejected, (state, action) => {
             state.status = 'failed';
-            state.isAuthenticated = false;  // <--- ADD THIS
-            state.user = null;              // <--- AND THIS
+            state.isAuthenticated = false;  
+            state.user = null;           
             state.error = action.payload || 'Login failed';
         })
         .addCase(logout.fulfilled, (state) => {
-            return initialState;  // reset state
+            return initialState;  
         });
     },
 });
