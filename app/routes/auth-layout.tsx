@@ -8,7 +8,7 @@ import Footer from '~/routes/footer';
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "CrabFarm" },
-    { name: "description", content: "Aquaculture Management System" },
+    { name: "description", content: "IoT and Machine learning based aquaculture" },
   ]
 }
 
@@ -16,7 +16,7 @@ export function meta({}: Route.MetaArgs) {
 const AuthLayout = () => {
   return (
     <DefaultRoutes>
-      <AuthSimpleLayout title='CrabFarm' description='Aquaculture Management System'>
+      <AuthSimpleLayout title='CrabFarm' description='IoT and Machine learning based aquaculture'>
         <Outlet />
       </AuthSimpleLayout>
       <Footer />

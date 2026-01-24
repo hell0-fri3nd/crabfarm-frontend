@@ -12,9 +12,11 @@ import {
 } from 'redux-persist';
 import { storage } from './web-storage';
 import authReducer from './auth/auth-slice';
+import cameraReducer from './camera-slice'
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  camera: cameraReducer
 });
 
 const persistConfig = {

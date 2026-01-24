@@ -5,7 +5,6 @@ import { Fragment } from 'react';
 import { useLocation } from 'react-router';
 
 const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: BreadcrumbItemType[] }) => {
-    console.log('Breadcrumbs:', breadcrumbs);
     const location = useLocation();
     return (
         <>

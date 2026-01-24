@@ -28,8 +28,8 @@ const mainNavItems: NavItem[] = [
         icon: Logs,
     },
     {
-        title: 'Weigh and Snap',
-        href: '/page/weigh-and-snap',
+        title: 'Weigh and Scan',
+        href: '/page/weigh-and-scan',
         icon: Camera,
     }
 ];

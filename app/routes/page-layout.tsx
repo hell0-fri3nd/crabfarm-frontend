@@ -17,7 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
   {
     title: 'Weigh and Snap',
-    href: '/page/weigh-and-snap',
+    href: '/page/weigh-and-scan',
   }
 ];
 

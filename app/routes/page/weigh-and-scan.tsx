@@ -4,7 +4,7 @@ import ScanCrabWidth from "~/components/scan-crab-width"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useIsMobile } from "~/hooks/use-mobile";
 
-const WeighAndSnap = () => {
+const WeighAndScan = () => {
     const mobile = useIsMobile();
     return (
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
@@ -51,4 +51,4 @@ const WeighAndSnap = () => {
     )
 }
 
-export default WeighAndSnap
+export default WeighAndScan
