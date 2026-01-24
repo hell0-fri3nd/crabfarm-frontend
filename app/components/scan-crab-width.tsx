@@ -5,9 +5,12 @@ import { Button, Input, Label } from './ui'
 import type { AppDispatch, RootState } from '~/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { status,start } from '~/store/camera-slice'
+import { useNavigate } from 'react-router';
 
 const ScanCrabWidth = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
+
     const [statusDetails, setStatusDetails] = React.useState({
         camera_status: false,
         pending: false,
@@ -17,11 +20,13 @@ const ScanCrabWidth = () => {
 
     React.useEffect(() => {
         const fetchStatus = async () => {
+
             await dispatch(status());
             setStatusDetails({
                 ...statusDetails,
                 camera_status: true
             });
+
 
             if (error === 'TOKEN_EXPIRED') {
                 setStatusDetails({ 
@@ -30,8 +35,8 @@ const ScanCrabWidth = () => {
                     camera_status: false,
                     camera_url: ``
                 });
+                navigate('/refresh-token/pin');
             }
-            console.log(error);
         };
         fetchStatus();
 
@@ -89,7 +94,7 @@ const ScanCrabWidth = () => {
                         <div className="flex flex-col items-center justify-center h-full w-full">
 
                             {
-                                statusDetails.camera_status ? (     
+                                data?.camera_status ? (     
                                     <img
                                     alt="Uploaded preview"
                                     className="h-full w-full object-cover"
