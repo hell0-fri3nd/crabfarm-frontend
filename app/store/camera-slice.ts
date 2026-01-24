@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { raspberry_api } from "./api";
+import api from "./api";
 import type { RootState } from "./store";
 
 interface statusDetails {
@@ -34,11 +34,8 @@ export const status = createAsyncThunk<statusDetails, void, { rejectValue: strin
     async (__, thunkAPI) => {
         try {
             const state = thunkAPI.getState() as RootState;
-            const token = state.auth.user?.access_token;
 
-            const response = await raspberry_api.get('/camera/status', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await api.get('raspberry/camera/status');
 
             const details: statusDetails = {
                 camera_status: response.data.camera_status,
@@ -73,11 +70,7 @@ export const start = createAsyncThunk<startStatus, void, { rejectValue: string }
         try {
 
             const state = thunkAPI.getState() as RootState;
-            const token = state.auth.user?.access_token;
-
-            const response = await raspberry_api.put('/camera/start',{}, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await api.put('raspberry/camera/start',{});
             
             const status: startStatus = {
                 status: response.data.camera_status,
