@@ -18,7 +18,7 @@ const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (!accessExpired){
+  if (!accessExpired && refreshExpired){
     return (
       <Navigate 
         to="/access-token" 
@@ -48,7 +48,7 @@ export const DefaultRoutes = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (!accessExpired){
+  if (!accessExpired && refreshExpired){
     return (
       <Navigate 
         to="/access-token" 
