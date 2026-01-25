@@ -7,7 +7,7 @@ import { Link } from 'react-router';
 import { LogOut, Settings } from 'lucide-react';
 
 import { useDispatch } from 'react-redux';
-import { logout, clearAuth } from '../store/auth/auth-slice';
+import { logout, clearAuth, accessExpired, refreshExpired } from '../store/auth/auth-slice';
 import { persistor, type AppDispatch } from '../store/store';
 
 interface UserMenuContentProps {
@@ -23,6 +23,8 @@ const UserMenuContent = ({ user }: UserMenuContentProps) => {
         try {
             cleanup();
             await dispatch(logout()).unwrap();
+            dispatch(accessExpired());
+            dispatch(refreshExpired());
             dispatch(clearAuth());
             persistor.purge();
         } catch (err) {
