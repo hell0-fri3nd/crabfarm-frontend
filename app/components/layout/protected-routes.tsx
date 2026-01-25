@@ -1,26 +1,66 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
 import type { RootState } from '../../store/store';
+import InfiniteProgressBar from '../infinite-progress';
 
 const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user, status,error } = useSelector((state: RootState) => state.auth);
-  // const location = useLocation()
 
-  // console.log("ProtectedRoutes - isAuthenticated:", isAuthenticated);
-  // console.log("user:", user);
-  // console.log("status:", status);
-  // console.log("error:", error);
+  const { isAuthenticated, status, accessExpired, refreshExpired } = useSelector((state: RootState) => state.auth);
 
-
-  if (status === 'loading') {
-    return <div>Loading...</div>;
+  if (status === 'loading' ) {
+    return (  
+      <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50">
+        <div >
+          <InfiniteProgressBar className="scale-90"/>
+        </div>
+      </div>
+    );
   }
 
-  if (!isAuthenticated) {
+  if (!accessExpired){
     return (
       <Navigate 
-        to="/auth/" 
+        to="/access-token" 
+        replace
+      />
+    );
+  }
+
+  // Not logged in OR refresh token expired → login
+  if (!isAuthenticated && !refreshExpired && !accessExpired) {
+    return <Navigate to="/auth/" replace />;
+  }
+
+  return children;
+}
+
+export const DefaultRoutes = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, status, refreshExpired, accessExpired } = useSelector((state: RootState) => state.auth);
+
+  if (status === 'loading') {
+    return (  
+      <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50">
+        <div >
+          <InfiniteProgressBar className="scale-90"/>
+        </div>
+      </div>
+    );
+  }
+
+  if (!accessExpired){
+    return (
+      <Navigate 
+        to="/access-token" 
+        replace
+      />
+    );
+  }
+
+  if (isAuthenticated && refreshExpired && accessExpired) {
+    return (
+      <Navigate 
+        to="/page/dashboard" 
         replace
       />
     );
@@ -29,23 +69,20 @@ const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
   return children;
 }
 
-export const DefaultRoutes = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user, status,error } = useSelector((state: RootState) => state.auth);
+export const PinRoute = ({ children }: { children: React.ReactNode }) => {
+  
+  const { accessExpired, refreshExpired } = useSelector(
+    (state: RootState) => state.auth
+  );
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
+  // Only allow PIN page if access token is valid but refresh expired
+  if (!accessExpired && refreshExpired) {
+    return <>{children}</>; // render PIN page
   }
 
-  if (isAuthenticated) {
-    return (
-      <Navigate 
-        to="/page/" 
-        replace
-      />
-    );
-  }
-
-  return children;
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/page/dashboard";
+  return <Navigate to={from} replace />;
 }
 
 export default ProtectedRoutes
