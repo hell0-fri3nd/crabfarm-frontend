@@ -13,12 +13,12 @@ import {
 import { storage } from './web-storage';
 import authReducer from './auth/auth-slice';
 import cameraReducer from './camera-slice'
-
+import { statusApi } from './auth/auth-status-slice';
 const rootReducer = combineReducers({
   auth: authReducer,
-  camera: cameraReducer
-});
-
+  camera: cameraReducer,
+  [statusApi.reducerPath]: statusApi.reducer, // correct way
+})
 const persistConfig = {
   key: 'root',
   storage,
@@ -34,7 +34,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(statusApi.middleware),
 });
 
 export const persistor = persistStore(store);

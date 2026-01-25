@@ -16,6 +16,8 @@ interface User {
 
 interface AuthState {
     isAuthenticated: boolean;
+    refreshExpired: boolean;
+    accessExpired: boolean;
     user: User | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
@@ -23,6 +25,8 @@ interface AuthState {
 
 const initialState: AuthState = {
     isAuthenticated: false,
+    refreshExpired: false,
+    accessExpired: false,
     user: null,
     status: 'idle',
     error: null,
@@ -75,7 +79,19 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        clearAuth: () => initialState
+        clearAuth: () => initialState,
+
+        accessExpired: (state) => {
+            state.isAuthenticated = true; // refresh token valid
+            state.accessExpired = false;
+            state.refreshExpired = true;
+        },
+
+        refreshExpired: (state) => {
+            state.isAuthenticated = true; // refresh token valid
+            state.accessExpired = false;
+            state.refreshExpired = false;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -86,6 +102,8 @@ export const authSlice = createSlice({
         .addCase(login.fulfilled, (state, action) => {
             state.status = 'succeeded';
             state.isAuthenticated = true;
+            state.accessExpired = true;
+            state.refreshExpired = true;
             state.user = {
                 user: action.payload.user, 
                 email: action.payload.email,
@@ -107,4 +125,4 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { clearAuth } = authSlice.actions;
+export const { clearAuth, accessExpired, refreshExpired } = authSlice.actions;
