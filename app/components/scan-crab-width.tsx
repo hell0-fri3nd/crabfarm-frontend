@@ -35,7 +35,7 @@ const ScanCrabWidth = () => {
                     camera_status: false,
                     camera_url: ``
                 });
-                navigate('/refresh-token/pin');
+                navigate('/access-token');
             }
         };
         fetchStatus();
@@ -51,10 +51,10 @@ const ScanCrabWidth = () => {
                 ...statusDetails, 
                 pending: true,
                 camera_status: false,
-                camera_url: ""
+                camera_url: `http://192.168.100.11:4573/camera/stream`
             });
             const result = await dispatch(start());
-            // console.log(result);
+            console.log(result);
         } catch (err: unknown) {
             console.error('Login failed:', err);
             setStatusDetails({ 
