@@ -7,6 +7,10 @@ interface LoginPayload {
     remember_me: boolean;
 }
 
+interface pinPayload {
+    pin: string;
+}
+
 interface User {
     message: string;
     user: string;
@@ -63,6 +67,38 @@ export const login = createAsyncThunk<User, LoginPayload, { rejectValue: string 
     }
 );
 
+export const pin = createAsyncThunk<User, pinPayload, { rejectValue: string }>(
+    'auth-slice/pin',
+    async ({ pin }, thunkAPI) => {
+        try {
+
+            const response = await api.post('/auth/pin', { pin });
+            console.log("responses: ", response.data[0].detail)
+            const userData: User = {
+                message: response.data[0].detail,
+                user: response.data[0].data.name,
+                email: response.data[0].data.email,
+                roles: response.data[0].data.role,
+            };
+
+            return userData;
+
+
+        } catch (error: any) {
+
+            console.log(error);
+            if (!error.response) {
+                // If there is no response object, it's a network issue
+                const networkErrorMessage = 'Cannot connect to the server. Please check your internet connection or try again later.';
+                return thunkAPI.rejectWithValue(networkErrorMessage);
+            }
+
+            const message = error?.response.data?.detail || 'Login failed';
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
 export const logout = createAsyncThunk(
     'auth-slice/logout', 
     async (_,thunkAPI) => {
@@ -82,44 +118,64 @@ export const authSlice = createSlice({
         clearAuth: () => initialState,
 
         accessExpired: (state) => {
-            state.isAuthenticated = true; // refresh token valid
-            state.accessExpired = false;
-            state.refreshExpired = true;
+            state.isAuthenticated   = true; // refresh token valid
+            state.accessExpired     = false;
+            state.refreshExpired    = true;
         },
 
         refreshExpired: (state) => {
-            state.isAuthenticated = true; // refresh token valid
-            state.accessExpired = false;
-            state.refreshExpired = false;
+            state.isAuthenticated   = true; // refresh token valid
+            state.accessExpired     = false;
+            state.refreshExpired    = false;
         },
     },
     extraReducers: (builder) => {
         builder
         .addCase(login.pending, (state) => {
-            state.status = 'loading';
-            state.error = null;
+            state.status    = 'loading';
+            state.error     = null;
         })
         .addCase(login.fulfilled, (state, action) => {
-            state.status = 'succeeded';
+            state.status          = 'succeeded';
             state.isAuthenticated = true;
-            state.accessExpired = true;
-            state.refreshExpired = true;
+            state.accessExpired   = true;
+            state.refreshExpired  = true;
             state.user = {
-                user: action.payload.user, 
-                email: action.payload.email,
-                roles: action.payload.roles,
-                message: action.payload.message
+                user:       action.payload.user, 
+                email:      action.payload.email,
+                roles:      action.payload.roles,
+                message:    action.payload.message
             }
-            state.error = null;
+            state.error     = null;
         })
         .addCase(login.rejected, (state, action) => {
-            state.status = 'failed';
-            state.isAuthenticated = false;  
-            state.user = null;           
-            state.error = action.payload || 'Login failed';
+            state.status            = 'failed';
+            state.isAuthenticated   = false; // refresh token valid
+            state.accessExpired     = false;
+            state.refreshExpired    = false;
+            state.isAuthenticated   = false;  
+            state.user              = null;           
+            state.error             = action.payload || 'Login failed';
         })
         .addCase(logout.fulfilled, (state) => {
             return initialState;  
+        })
+        .addCase(pin.fulfilled, (state, action) => {
+            state.status            = 'succeeded';
+            state.accessExpired     = true;
+            state.user = {
+                user:       action.payload.user, 
+                email:      action.payload.email,
+                roles:      action.payload.roles,
+                message:    action.payload.message
+            }
+            state.error             = null;
+        })
+        .addCase(pin.rejected, (state, action) => {
+            state.status            = 'failed';
+            state.accessExpired     = false;
+            state.user              = null;           
+            state.error             = action.payload || 'Incorrect PIN';
         });
     },
 });
