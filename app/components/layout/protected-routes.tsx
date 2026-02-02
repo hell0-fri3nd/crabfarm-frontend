@@ -28,7 +28,7 @@ const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
   }
 
   // Not logged in OR refresh token expired → login
-  if (!isAuthenticated && !refreshExpired && !accessExpired) {
+  if (!isAuthenticated && !refreshExpired) {
     return <Navigate to="/auth/" replace />;
   }
 
@@ -71,7 +71,7 @@ export const DefaultRoutes = ({ children }: { children: React.ReactNode }) => {
 
 export const PinRoute = ({ children }: { children: React.ReactNode }) => {
   
-  const { accessExpired, refreshExpired } = useSelector(
+  const { accessExpired, refreshExpired, status } = useSelector(
     (state: RootState) => state.auth
   );
 

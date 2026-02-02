@@ -2,14 +2,17 @@ import React from 'react'
 import { Card } from './ui/card'
 import { ImageIcon, Loader2, Save, ScanQrCode } from 'lucide-react'
 import { Button, Input, Label } from './ui'
-import type { AppDispatch, RootState } from '~/store/store'
+import { persistor, type AppDispatch, type RootState } from '~/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { status,start } from '~/store/camera-slice'
 import { useNavigate } from 'react-router';
+import { accessExpired, clearAuth, logout, refreshExpired } from '~/store/auth/auth-slice'
+import { useMobileNavigation } from '~/hooks/user-mobile-navigations'
 
 const ScanCrabWidth = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
+    const cleanup = useMobileNavigation();
 
     const [statusDetails, setStatusDetails] = React.useState({
         camera_status: false,
@@ -20,29 +23,47 @@ const ScanCrabWidth = () => {
 
     React.useEffect(() => {
         const fetchStatus = async () => {
-
+         
             await dispatch(status());
             setStatusDetails({
                 ...statusDetails,
                 camera_status: true
             });
 
-
-            if (error === 'TOKEN_EXPIRED') {
+   
+            if (error === 'TOKEN_ACCESS_EXPIRED') {
                 setStatusDetails({ 
                     ...statusDetails, 
                     pending: false,
                     camera_status: false,
                     camera_url: ``
                 });
+
+                dispatch(accessExpired());
+                // window.location.reload();
                 navigate('/access-token');
             }
+
+               
+            if (error === 'TOKEN_REFRESH_EXPIRED') {
+        
+                dispatch(accessExpired());
+                dispatch(refreshExpired());
+                dispatch(clearAuth());
+                cleanup();
+                dispatch(logout());
+                persistor.purge();
+                // window.location.reload();
+                navigate('/access-token');
+            }
+
+            
         };
         fetchStatus();
 
         const intervalId = setInterval(fetchStatus, 2000); 
         return () => clearInterval(intervalId); 
-    }, [dispatch]);
+    }, [error,dispatch]);
 
     const startCamera = async (e: React.SyntheticEvent) => {
         try {

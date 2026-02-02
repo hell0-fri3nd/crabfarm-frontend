@@ -55,8 +55,13 @@ export const status = createAsyncThunk<statusDetails, void, { rejectValue: strin
                 );
             }
             if (error.response?.status === 401) {
-                return thunkAPI.rejectWithValue('TOKEN_EXPIRED');
+                return thunkAPI.rejectWithValue('TOKEN_ACCESS_EXPIRED');
             }
+
+            if (error.response?.status === 400) {
+                return thunkAPI.rejectWithValue('TOKEN_REFRESH_EXPIRED');
+            }
+
 
             const message = error?.response?.data?.error || 'Request failed';
             return thunkAPI.rejectWithValue(message);
@@ -86,7 +91,11 @@ export const start = createAsyncThunk<startStatus, void, { rejectValue: string }
                 );
             }
             if (error.response?.status === 401) {
-                return thunkAPI.rejectWithValue('TOKEN_EXPIRED');
+                return thunkAPI.rejectWithValue('ACCESS_TOKEN_EXPIRED');
+            }
+            
+            if (error.response?.status === 400) {
+                return thunkAPI.rejectWithValue('REFRESH_TOKEN_EXPIRED');
             }
 
             const message = error?.response?.data?.error || 'Request failed';

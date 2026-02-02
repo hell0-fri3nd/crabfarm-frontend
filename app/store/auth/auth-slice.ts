@@ -117,14 +117,16 @@ export const authSlice = createSlice({
     reducers: {
         clearAuth: () => initialState,
 
+        // 401
         accessExpired: (state) => {
             state.isAuthenticated   = true; // refresh token valid
             state.accessExpired     = false;
             state.refreshExpired    = true;
         },
 
+        // 400
         refreshExpired: (state) => {
-            state.isAuthenticated   = true; // refresh token valid
+            state.isAuthenticated   = false; // refresh token valid
             state.accessExpired     = false;
             state.refreshExpired    = false;
         },
@@ -153,7 +155,6 @@ export const authSlice = createSlice({
             state.isAuthenticated   = false; // refresh token valid
             state.accessExpired     = false;
             state.refreshExpired    = false;
-            state.isAuthenticated   = false;  
             state.user              = null;           
             state.error             = action.payload || 'Login failed';
         })
