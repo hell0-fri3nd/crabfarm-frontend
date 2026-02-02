@@ -2,10 +2,16 @@ import { type RouteConfig,route,index } from "@react-router/dev/routes";
 
 export default [
 
-    // Public section
+    route("/","routes/default-routing.tsx"),
+    
+    // Authentication section
     route("/auth", "routes/auth-layout.tsx", [
         index("routes/auth/login.tsx"),
-        route("pin", "routes/auth/pin.tsx"),
+    ]),
+
+    // Pin section
+    route("/access-token", "routes/pin-layout.tsx", [
+        index("routes/auth/pin.tsx"),
     ]),
 
     // Protected section
@@ -15,7 +21,6 @@ export default [
         route("weigh-and-scan", "routes/page/weigh-and-scan.tsx"),
     ]),
     
-    route("","routes/default-routing.tsx"),
     route("*", "routes/page-not-found.tsx")
  
 ] satisfies RouteConfig;

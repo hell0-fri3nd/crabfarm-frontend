@@ -6,15 +6,19 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-
+import React from "react"
 import type { Route } from "./+types/root";
 import "./app.css";
 import { ThemeProvider } from "./components/theme-provider";
 import Bubbles from "./components/custom/bubbles";
-import { Provider } from "react-redux";
-import { store,persistor  } from "./store/store";
+import { Provider, useDispatch } from "react-redux";
+import { store, persistor, type AppDispatch  } from "./store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import InfiniteProgressBar from "./components/infinite-progress"
+import { refreshExpired, accessExpired, logout,clearAuth } from "./store/auth/auth-slice";
+import { useGetStatusQuery } from "./store/auth/auth-status-slice";
+import { useMobileNavigation } from "./hooks/user-mobile-navigations";
+
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -37,6 +41,48 @@ const loadingMarkup = (
   </div>
 );
 
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+
+  const cleanup = useMobileNavigation();
+  const dispatch = useDispatch<AppDispatch>(); 
+
+  const { data, error, isLoading } = useGetStatusQuery(undefined, {
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
+
+
+  // Handle auth errors
+  React.useEffect(() => {
+    const detail = (error as any)?.data?.detail;
+
+    if (detail === "MISSING_ACCESS_TOKEN") {
+      dispatch(accessExpired());
+    }
+
+    if (detail === "MISSING_REFRESH_TOKEN") {
+      cleanup();
+      dispatch(logout());
+      dispatch(accessExpired());
+      dispatch(refreshExpired());
+      dispatch(clearAuth());
+      persistor.purge();
+    }
+  }, [error, dispatch, cleanup]);
+
+  if (isLoading) {
+    return (  
+      <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50">
+        <div >
+          <InfiniteProgressBar className="scale-90"/>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -51,8 +97,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Provider store={store}>
           <PersistGate loading={loadingMarkup} persistor={persistor}>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-              <Bubbles count={30}/>
-              {children}
+              <AuthProvider>
+                <Bubbles count={30}/>
+                {children}
+              </AuthProvider>
             </ThemeProvider>
           </PersistGate>
           <ScrollRestoration />

@@ -6,22 +6,21 @@ import {
   Checkbox,
   Label
 } from '~/components/ui';
-import type { AppDispatch } from "../../store/store";
-import { useDispatch } from 'react-redux';
+import type { AppDispatch, RootState } from "../../store/store";
+import { useDispatch, useSelector } from 'react-redux';
 import { login } from '~/store/auth/auth-slice';
 import InputError from '~/components/input-error';
 import { useNavigate } from 'react-router';
 
 const LoginIndex = () => {
+
+  const { error } = useSelector((state: RootState) => state.auth);
+
   const [user, setUser] = React.useState({
     email: '',
     password: ''
   });
 
-  const [errors,setErrors] = React.useState({
-    email: '',
-    password: ''
-  });
   const dispatch = useDispatch<AppDispatch>(); 
   const navigate = useNavigate();
 
@@ -29,14 +28,10 @@ const LoginIndex = () => {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault(); 
-      const result = await dispatch(login({ email: user.email, password: user.password, remember_me: false }));
-      // console.log("Login succeeded:", result.payload?.message || '');
-      // alert("Login succeeded:", result.payload?.message || '');
+      const result = await dispatch(login({ email: user.email, password: user.password, remember_me: false })).unwrap();
       navigate('/page/dashboard');
-
     } catch (err: unknown) {
-      setErrors({...errors, password:  "Invalid email or password"});
-      console.error('Login failed:', err);
+      console.log('Login failed:', err);
     }
     
   };
@@ -56,7 +51,7 @@ const LoginIndex = () => {
           value={user.email}
           onChange={(e) => setUser({ ...user, email: e.target.value })}
           required/>
-          <InputError message={errors.email} />
+
         </div>
 
         <div className="grid gap-2 w-full">
@@ -69,7 +64,7 @@ const LoginIndex = () => {
           value={user.password}
           onChange={(e) => setUser({ ...user, password: e.target.value })}
           required/>
-          <InputError message={errors.password} />
+          <InputError message={error} />
         </div>
 
         <div className="flex items-center justify-between w-full">
@@ -85,7 +80,6 @@ const LoginIndex = () => {
         </div>
 
         <Button className="w-full" type='submit'>Login</Button>
-        {/* <Button variant='outline' className='bg-secondary-500 w-full'>Create Account</Button> */}
                   
       </div>
     </form>
