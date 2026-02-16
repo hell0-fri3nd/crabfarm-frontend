@@ -8,89 +8,64 @@ import { status,start } from '~/store/camera-slice'
 import { useNavigate } from 'react-router';
 import { accessExpired, clearAuth, logout, refreshExpired } from '~/store/auth/auth-slice'
 import { useMobileNavigation } from '~/hooks/user-mobile-navigations'
+import { useQuery } from '@tanstack/react-query';
+interface CameraData {
+  camera_status: boolean;
+  camera_url?: string;
+  extracted_data?: string;
+  width_cm?: number;
+}
 
 const ScanCrabWidth = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const cleanup = useMobileNavigation();
 
-    const [statusDetails, setStatusDetails] = React.useState({
-        camera_status: false,
-        pending: false,
-        camera_url: ``
+    const { data, error, isLoading } = useQuery<CameraData | null, string>({
+        queryKey: ['camera-status'],
+        queryFn: async () => {
+            try {
+                const data = await dispatch(status()).unwrap();
+                return {
+                    camera_status: data?.camera_status,
+                    camera_url: data?.camera_url,
+                    extracted_data: data?.extracted_data,
+                    width_cm: data?.width_cm
+                };
+            } catch (err: any) {
+                throw err?.message || 'UNKNOWN_ERROR';
+            }
+        },
+        refetchInterval: 1000,
+        retry: false,
     });
-    const { data, error } = useSelector((state: RootState) => state.camera);
+
 
     React.useEffect(() => {
-        const fetchStatus = async () => {
-         
-            await dispatch(status());
-            setStatusDetails({
-                ...statusDetails,
-                camera_status: true
-            });
+        if (!error) return;
 
-   
-            if (error === 'TOKEN_ACCESS_EXPIRED') {
-                setStatusDetails({ 
-                    ...statusDetails, 
-                    pending: false,
-                    camera_status: false,
-                    camera_url: ``
-                });
+        if (error === 'TOKEN_ACCESS_EXPIRED') {
+            dispatch(accessExpired());
+            navigate('/access-token');
+        }
 
-                dispatch(accessExpired());
-                // window.location.reload();
-                navigate('/access-token');
-            }
-
-               
-            if (error === 'TOKEN_REFRESH_EXPIRED') {
-        
-                dispatch(accessExpired());
-                dispatch(refreshExpired());
-                dispatch(clearAuth());
-                cleanup();
-                dispatch(logout());
-                persistor.purge();
-                // window.location.reload();
-                navigate('/access-token');
-            }
-
-            
-        };
-        fetchStatus();
-
-        const intervalId = setInterval(fetchStatus, 2000); 
-        return () => clearInterval(intervalId); 
-    }, [error,dispatch]);
+        if (error === 'TOKEN_REFRESH_EXPIRED') {
+            dispatch(accessExpired());
+            dispatch(refreshExpired());
+            dispatch(clearAuth());
+            cleanup();
+            dispatch(logout());
+            persistor.purge();
+            navigate('/access-token');
+        }
+    }, [error, dispatch]);
 
     const startCamera = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
         try {
-            e.preventDefault(); 
-            setStatusDetails({ 
-                ...statusDetails, 
-                pending: true,
-                camera_status: false,
-                camera_url: `http://192.168.100.11:4573/camera/stream`
-            });
-            const result = await dispatch(start());
-            console.log(result);
-        } catch (err: unknown) {
-            console.error('Login failed:', err);
-            setStatusDetails({ 
-                ...statusDetails, 
-                pending: false,
-                camera_status: false,
-                camera_url: ``
-            });
-        } finally {
-            setStatusDetails({ 
-                ...statusDetails, 
-                pending: false,
-                camera_status: true,
-                camera_url: `http://192.168.100.11:4573/camera/stream`
-            });
+            await dispatch(start());
+        } catch (err) {
+            console.error(err);
         }
     };
 
@@ -119,7 +94,7 @@ const ScanCrabWidth = () => {
                                     <img
                                     alt="Uploaded preview"
                                     className="h-full w-full object-cover"
-                                    src={statusDetails.camera_url}
+                                    src={data.camera_url}
                                     />
                                 ) : (
                                     <div>
@@ -135,13 +110,13 @@ const ScanCrabWidth = () => {
                     <div className="flex w-full justify-center md:justify-end">
                         <Button variant="outline" onClick={startCamera} disabled={data?.camera_status}>
                             {
-                                statusDetails.pending ? (
+                                isLoading ? (
                                     <Loader2 className="animate-spin" />
                                 ) : (
                                     <ScanQrCode className="h-4 w-4" />
                                 )
                             }
-                            {statusDetails.pending ? "" : "Scan QR Code"}
+                            {isLoading ? "" : "Scan QR Code"}
                         </Button>
                     </div>
 
@@ -185,7 +160,6 @@ const ScanCrabWidth = () => {
                             id="crab-input"
                             placeholder="Enter Crab weight in grams"
                             className="h-10"
-                            value={data?.width_cm}
                             readOnly
                             />
                         </div>
@@ -199,6 +173,7 @@ const ScanCrabWidth = () => {
                             id="crab-width"
                             placeholder="Enter Crab width in cm"
                             className="h-10"
+                            value={data?.width_cm}
                             />
                         </div>
 
