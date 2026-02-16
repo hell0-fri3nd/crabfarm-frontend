@@ -18,6 +18,8 @@ import InfiniteProgressBar from "./components/infinite-progress"
 import { refreshExpired, accessExpired, logout,clearAuth } from "./store/auth/auth-slice";
 import { useGetStatusQuery } from "./store/auth/auth-status-slice";
 import { useMobileNavigation } from "./hooks/user-mobile-navigations";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./query-client";
 
 
 export const links: Route.LinksFunction = () => [
@@ -96,12 +98,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         
         <Provider store={store}>
           <PersistGate loading={loadingMarkup} persistor={persistor}>
-            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-              <AuthProvider>
-                <Bubbles count={30}/>
-                {children}
-              </AuthProvider>
-            </ThemeProvider>
+            <QueryClientProvider client={queryClient}>
+              <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                <AuthProvider>
+                  <Bubbles count={30}/>
+                  {children}
+                </AuthProvider>
+              </ThemeProvider>
+            </QueryClientProvider>
           </PersistGate>
           <ScrollRestoration />
           <Scripts />
