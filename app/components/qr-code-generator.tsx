@@ -6,11 +6,55 @@ import { toPng } from 'html-to-image';
 
 import QRCode from './custom/qr-code'
 import IconLogo from './custom/icon-logo'
+import SelectDropdown from './select-dropdown';
+import type { AppDispatch, RootState } from '~/store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { crab } from '~/store/crab-slice';
 
 const QrCodeGenerator = () => {
-    const [text, setText] = React.useState('');
+    const dispatch = useDispatch<AppDispatch>();
+    const [text, setText] = React.useState({
+            id: null,
+            name: null,   
+            group_by: null
+    });
+    const [group,setGroup] = React.useState<string | null>('A');
+
     const [isPending, setIsPending] = React.useState(false);
     const captureRef = React.useRef<HTMLDivElement>(null);
+    const { groups } = useSelector((state: RootState) => state.crab);
+
+    const groupBy = [
+        { index: 1, label: "A", value: "A" },
+        { index: 2, label: "B", value: "B" },        
+        { index: 3, label: "C", value: "C" },
+        { index: 4, label: "D", value: "D" },
+        { index: 5, label: "E", value: "E" }
+    ]
+
+    React.useEffect(() => {
+        dispatch(crab(group));
+    }, [dispatch, group]);
+
+    const crabName = React.useMemo(() => {
+        if (!groups) return [];
+
+        return groups.map((item, index) => ({
+            index: item.id,
+            label: item.name,   
+            value: item.name
+        }));
+    }, [groups]);
+
+    const crabMap = React.useMemo(() => {
+        const map = new Map();
+        (groups ?? []).forEach(item => {
+            map.set(String(item.name), item);
+        });
+        return map;
+    }, [groups]);
+
+
 
     const handleDownload = React.useCallback(async () => {
         if (!captureRef.current) return;
@@ -25,15 +69,30 @@ const QrCodeGenerator = () => {
 
             const link = document.createElement("a");
             link.href = dataUrl;
-            link.download = `${text || "qr-code"}.png`;
+            link.download = `${text.name || "qr-code"}.png`;
             link.click();
         } catch (err) {
             console.error("Download failed:", err);
         } finally {
             setIsPending(false);
-            setText('');
+            setText({
+                id: null,
+                name: null,   
+                group_by: null
+            });
         }
     }, [text]);
+
+    const handleCrabChange = (value: string | null) => {
+        if (!value) return;
+   
+        const selected = crabMap.get(value); 
+        if (!selected) {
+            console.log("No match found for value:", value);
+            return;
+        }
+        setText(selected);
+    };
 
     return (
         <Card className="overflow-hidden border">
@@ -49,15 +108,15 @@ const QrCodeGenerator = () => {
                 <div className="space-y-4">
                     
                     <div className="overflow-hidden rounded-lg border bg-muted p-4">
-                        
-                        { text == '' &&                         
+     
+                        { (text.name == null) &&                         
                             <div className="flex flex-col items-center justify-center h-48 w-full">
                                 <ImageIcon className="mx-auto h-8 w-8 text-muted-foreground/40 mb-2" />
                                 <p className="text-sm text-muted-foreground"> Unable to generate a empty name</p>
                             </div>
                         }
                         
-                        { text != '' && 
+                        { (text.name != null) && 
        
                             <div ref={captureRef} className="grid auto-rows-min gap-0 md:grid-cols-2 p-2">
                                 
@@ -72,12 +131,12 @@ const QrCodeGenerator = () => {
                                     </div>
 
                                     <h5 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                                        {text}
+                                        {text.name ?? ''}
                                     </h5>
                                 </div>
 
                                 <div className="flex justify-center md:justify-center">
-                                    <QRCode text={text} />
+                                    <QRCode id={text.id} name={text.name} group_by={text.group_by}  />
                                 </div>
 
                             </div>
@@ -86,26 +145,29 @@ const QrCodeGenerator = () => {
 
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="crab-input"className="text-xs font-medium tracking-wide text-muted-foreground">
-                            Crab Name 
-                        </Label>
-                        <Input
-                        id="crab-input"
-                        placeholder="Enter Crab Name"
-                        className="h-10"
-                        onChange={(e)=>setText(e.target.value)}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <SelectDropdown
+                            label="Crab group"
+                            placeholder="Select group"
+                            options={groupBy}
+                            value={group ?? ''}
+                            onValueChange={setGroup}
+                        />
+
+                        <SelectDropdown
+                            label="Crab Name"
+                            placeholder="Select name"
+                            options={crabName}
+                            value={text.name ?? ''}
+                            onValueChange={handleCrabChange}
                         />
                     </div>
+
                                 
                     <div className="flex w-full justify-center gap-2 md:justify-end md:grid-cols-2">
-                        {/* <Button variant="outline">
-                            <Loader2 className="h-4 w-4" />
-                            Generate QR Code 
-                        </Button> */}
                         <Button 
                         onClick={handleDownload} 
-                        disabled={isPending || text === ''}
+                        disabled={isPending || text.name === ''}
                         className="outline">
                         {
                             isPending ? (

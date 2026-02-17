@@ -13,7 +13,7 @@ interface SelectDropdownProps {
     placeholder?: string
     options: SelectOption[]
     value?: string
-    onValueChange?: (value: string) => void
+    onValueChange?: (value: string | null) => void
     groupLabel?: string
     className?: string
 }

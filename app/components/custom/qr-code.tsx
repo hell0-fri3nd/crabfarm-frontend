@@ -4,8 +4,12 @@ import type { Options } from "qr-code-styling";
 import rawOptions from "../../assets/json/options.json";
 
 const options = rawOptions as unknown as Partial<Options>;
-
-const QRCode = ({text}: {text: string}) => {
+interface qrDetails {
+    id: number | null;
+    name: string | null;  
+    group_by: string | null;
+}
+const QRCode = ({id,name,group_by}:qrDetails) => {
     
     const qrRef = useRef<HTMLDivElement>(null);
     const qrCodeRef = useRef<QRCodeStyling | null>(null);
@@ -20,10 +24,11 @@ const QRCode = ({text}: {text: string}) => {
         }
     }, []);
 
+    const jsonData = JSON.stringify({ id, name, group_by });
     useEffect(() => {
         if (!qrCodeRef.current) return;
-        qrCodeRef.current.update({ data: text });
-    }, [text]);
+        qrCodeRef.current.update({ data: jsonData });
+    }, [id, name, group_by]);
 
     return (
         <div className="inline-block overflow-hidden rounded-xl shadow-lg">
