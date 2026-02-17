@@ -16,17 +16,17 @@ interface startStatus {
 
 
 interface statusState {
-  data: statusDetails | null;
-  loading: 'idle' | 'pending' | 'succeeded' | 'failed';
-  error: string | null;
-  status: string | null;
+    data: statusDetails | null;
+    loading: 'idle' | 'pending' | 'succeeded' | 'failed';
+    error: string | null;
+    status: string | null;
 }
 
 const initialState: statusState = {
-  data: null,
-  loading: 'idle',
-  error: null,
-  status: ''
+    data: null,
+    loading: 'idle',
+    error: null,
+    status: ''
 };
 
 
