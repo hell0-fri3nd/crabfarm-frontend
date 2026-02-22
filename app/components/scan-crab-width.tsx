@@ -20,12 +20,14 @@ const ScanCrabWidth = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const cleanup = useMobileNavigation();
+    const [cameraLoading,setCameraLoading] = React.useState(false);
 
     const { data, error, isLoading } = useQuery<CameraData | null, string>({
         queryKey: ['camera-status'],
         queryFn: async () => {
             try {
                 const data = await dispatch(status()).unwrap();
+                setCameraLoading(data?.camera_status);
                 return {
                     camera_status: data?.camera_status,
                     camera_url: data?.camera_url,
@@ -60,13 +62,28 @@ const ScanCrabWidth = () => {
         }
     }, [error, dispatch]);
 
+    const parsedData = React.useMemo(() => {
+        if (!data?.extracted_data) return null;
+        try {
+            return JSON.parse(data.extracted_data);
+        } catch {
+            return null;
+        }
+    }, [data?.extracted_data]);
+
     const startCamera = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         try {
+            setCameraLoading(true);
             await dispatch(start());
         } catch (err) {
             console.error(err);
         }
+    };
+
+    const addCrablogs = async (e: React.SyntheticEvent) => {
+
+        console.log(JSON.parse(data!.extracted_data!).name)
     };
 
     return (
@@ -108,7 +125,7 @@ const ScanCrabWidth = () => {
                     </div>
                                 
                     <div className="flex w-full justify-center md:justify-end">
-                        <Button variant="outline" onClick={startCamera} disabled={data?.camera_status}>
+                        <Button variant="outline" onClick={startCamera} disabled={cameraLoading}>
                             {
                                 isLoading ? (
                                     <Loader2 className="animate-spin" />
@@ -147,7 +164,7 @@ const ScanCrabWidth = () => {
                             id="crab-input"
                             placeholder="Enter Crab Name"
                             className="h-10"
-                            value={data?.extracted_data}
+                            value={parsedData?.name ?? ""}
                             readOnly
                             />
                         </div>
@@ -180,7 +197,7 @@ const ScanCrabWidth = () => {
                     </div>
                                 
                     <div className="flex w-full justify-center md:justify-end">
-                        <Button variant="outline">
+                        <Button variant="outline" onClick={addCrablogs}>
                             <Save className="h-4 w-4" />
                             Save Crab data
                         </Button>
