@@ -9,6 +9,9 @@ import { useNavigate } from 'react-router';
 import { accessExpired, clearAuth, logout, refreshExpired } from '~/store/auth/auth-slice'
 import { useMobileNavigation } from '~/hooks/user-mobile-navigations'
 import { useQuery } from '@tanstack/react-query';
+import { insertCrabLogs } from '~/store/crab-slice'
+import { toast } from 'sonner'
+
 interface CameraData {
   camera_status: boolean;
   camera_url?: string;
@@ -59,7 +62,9 @@ const ScanCrabWidth = () => {
             dispatch(logout());
             persistor.purge();
             navigate('/access-token');
+
         }
+
     }, [error, dispatch]);
 
     const parsedData = React.useMemo(() => {
@@ -75,15 +80,26 @@ const ScanCrabWidth = () => {
         e.preventDefault();
         try {
             setCameraLoading(true);
-            await dispatch(start());
+            const data = await dispatch(start()).unwrap();
+            console.log(data);
         } catch (err) {
             console.error(err);
         }
     };
 
     const addCrablogs = async (e: React.SyntheticEvent) => {
-
-        console.log(JSON.parse(data!.extracted_data!).name)
+        try {
+            e.preventDefault(); 
+            const result = await dispatch(insertCrabLogs({ 
+                crab_id: parsedData?.id, 
+                type: "actual", 
+                width: data?.width_cm ?? 0, 
+                weight: 0
+            })).unwrap();
+            toast.success("Crab logs insert successfully", { position: "top-right" });
+        } catch (err: unknown) {
+            console.log('Login failed:', err);
+        }
     };
 
     return (

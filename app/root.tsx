@@ -20,6 +20,7 @@ import { useGetStatusQuery } from "./store/auth/auth-status-slice";
 import { useMobileNavigation } from "./hooks/user-mobile-navigations";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./query-client";
+import { Toaster } from "./components/ui/sonner";
 
 
 export const links: Route.LinksFunction = () => [
@@ -102,7 +103,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
                 <AuthProvider>
                   <Bubbles count={30}/>
+                  <Toaster richColors theme="system"/>
                   {children}
+                  
                 </AuthProvider>
               </ThemeProvider>
             </QueryClientProvider>

@@ -14,7 +14,6 @@ interface CrabApiResponse {
     data: CrabGroupDetails[];
 }
 
-
 interface CrabState {
     groups: CrabGroupDetails[];
     loading: string;
@@ -26,6 +25,14 @@ const initialState: CrabState = {
     loading: 'idle',
     error: null,
 };
+
+interface crabPayload
+{
+    "crab_id" : number,
+    "type": string,
+    "width": number,
+    "weight": number
+}
 
 export const crab = createAsyncThunk<CrabGroupDetails[],string | null | undefined, { rejectValue: string }>(
     'crab-slice/crab',
@@ -55,6 +62,29 @@ export const crab = createAsyncThunk<CrabGroupDetails[],string | null | undefine
         }
     }
 );
+
+export const insertCrabLogs = createAsyncThunk<{ details: string }, crabPayload, { rejectValue: string }>(
+    'crab-slice/insertCrabLogs',
+    async (crabPayload, thunkAPI) => {
+        try {
+
+            const response = await api.post('/crabs/logs',crabPayload);
+            return response.data.detail;
+
+
+        } catch (error: any) {
+
+            if (!error.response) {
+                // If there is no response object, it's a network issue
+                const networkErrorMessage = 'Cannot connect to the server. Please check your internet connection or try again later.';
+                return thunkAPI.rejectWithValue(networkErrorMessage);
+            }
+
+            const message = error?.response.data?.detail || 'Login failed';
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+)
 
 const crabSlice  = createSlice({    
     name: 'crab',
