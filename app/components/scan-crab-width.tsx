@@ -8,89 +8,97 @@ import { status,start } from '~/store/camera-slice'
 import { useNavigate } from 'react-router';
 import { accessExpired, clearAuth, logout, refreshExpired } from '~/store/auth/auth-slice'
 import { useMobileNavigation } from '~/hooks/user-mobile-navigations'
+import { useQuery } from '@tanstack/react-query';
+import { insertCrabLogs } from '~/store/crab-slice'
+import { toast } from 'sonner'
+
+interface CameraData {
+  camera_status: boolean;
+  camera_url?: string;
+  extracted_data?: string;
+  width_cm?: number;
+}
 
 const ScanCrabWidth = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const cleanup = useMobileNavigation();
+    const [cameraLoading,setCameraLoading] = React.useState(false);
 
-    const [statusDetails, setStatusDetails] = React.useState({
-        camera_status: false,
-        pending: false,
-        camera_url: ``
+    const { data, error, isLoading } = useQuery<CameraData | null, string>({
+        queryKey: ['camera-status'],
+        queryFn: async () => {
+            try {
+                const data = await dispatch(status()).unwrap();
+                setCameraLoading(data?.camera_status);
+                return {
+                    camera_status: data?.camera_status,
+                    camera_url: data?.camera_url,
+                    extracted_data: data?.extracted_data,
+                    width_cm: data?.width_cm
+                };
+            } catch (err: any) {
+                throw err?.message || 'UNKNOWN_ERROR';
+            }
+        },
+        refetchInterval: 1000,
+        retry: false,
     });
-    const { data, error } = useSelector((state: RootState) => state.camera);
+
 
     React.useEffect(() => {
-        const fetchStatus = async () => {
-         
-            await dispatch(status());
-            setStatusDetails({
-                ...statusDetails,
-                camera_status: true
-            });
+        if (!error) return;
 
-   
-            if (error === 'TOKEN_ACCESS_EXPIRED') {
-                setStatusDetails({ 
-                    ...statusDetails, 
-                    pending: false,
-                    camera_status: false,
-                    camera_url: ``
-                });
+        if (error === 'TOKEN_ACCESS_EXPIRED') {
+            dispatch(accessExpired());
+            navigate('/access-token');
+        }
 
-                dispatch(accessExpired());
-                // window.location.reload();
-                navigate('/access-token');
-            }
+        if (error === 'TOKEN_REFRESH_EXPIRED') {
+            dispatch(accessExpired());
+            dispatch(refreshExpired());
+            dispatch(clearAuth());
+            cleanup();
+            dispatch(logout());
+            persistor.purge();
+            navigate('/access-token');
 
-               
-            if (error === 'TOKEN_REFRESH_EXPIRED') {
-        
-                dispatch(accessExpired());
-                dispatch(refreshExpired());
-                dispatch(clearAuth());
-                cleanup();
-                dispatch(logout());
-                persistor.purge();
-                // window.location.reload();
-                navigate('/access-token');
-            }
+        }
 
-            
-        };
-        fetchStatus();
+    }, [error, dispatch]);
 
-        const intervalId = setInterval(fetchStatus, 2000); 
-        return () => clearInterval(intervalId); 
-    }, [error,dispatch]);
+    const parsedData = React.useMemo(() => {
+        if (!data?.extracted_data) return null;
+        try {
+            return JSON.parse(data.extracted_data);
+        } catch {
+            return null;
+        }
+    }, [data?.extracted_data]);
 
     const startCamera = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        try {
+            setCameraLoading(true);
+            const data = await dispatch(start()).unwrap();
+            console.log(data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const addCrablogs = async (e: React.SyntheticEvent) => {
         try {
             e.preventDefault(); 
-            setStatusDetails({ 
-                ...statusDetails, 
-                pending: true,
-                camera_status: false,
-                camera_url: `http://192.168.100.11:4573/camera/stream`
-            });
-            const result = await dispatch(start());
-            console.log(result);
+            const result = await dispatch(insertCrabLogs({ 
+                crab_id: parsedData?.id, 
+                type: "actual", 
+                width: data?.width_cm ?? 0, 
+                weight: 0
+            })).unwrap();
+            toast.success("Crab logs insert successfully", { position: "top-right" });
         } catch (err: unknown) {
-            console.error('Login failed:', err);
-            setStatusDetails({ 
-                ...statusDetails, 
-                pending: false,
-                camera_status: false,
-                camera_url: ``
-            });
-        } finally {
-            setStatusDetails({ 
-                ...statusDetails, 
-                pending: false,
-                camera_status: true,
-                camera_url: `http://192.168.100.11:4573/camera/stream`
-            });
+            console.log('Login failed:', err);
         }
     };
 
@@ -119,7 +127,7 @@ const ScanCrabWidth = () => {
                                     <img
                                     alt="Uploaded preview"
                                     className="h-full w-full object-cover"
-                                    src={statusDetails.camera_url}
+                                    src={data.camera_url}
                                     />
                                 ) : (
                                     <div>
@@ -133,15 +141,15 @@ const ScanCrabWidth = () => {
                     </div>
                                 
                     <div className="flex w-full justify-center md:justify-end">
-                        <Button variant="outline" onClick={startCamera} disabled={data?.camera_status}>
+                        <Button variant="outline" onClick={startCamera} disabled={cameraLoading}>
                             {
-                                statusDetails.pending ? (
+                                isLoading ? (
                                     <Loader2 className="animate-spin" />
                                 ) : (
                                     <ScanQrCode className="h-4 w-4" />
                                 )
                             }
-                            {statusDetails.pending ? "" : "Scan QR Code"}
+                            {isLoading ? "" : "Scan QR Code"}
                         </Button>
                     </div>
 
@@ -172,7 +180,7 @@ const ScanCrabWidth = () => {
                             id="crab-input"
                             placeholder="Enter Crab Name"
                             className="h-10"
-                            value={data?.extracted_data}
+                            value={parsedData?.name ?? ""}
                             readOnly
                             />
                         </div>
@@ -185,7 +193,6 @@ const ScanCrabWidth = () => {
                             id="crab-input"
                             placeholder="Enter Crab weight in grams"
                             className="h-10"
-                            value={data?.width_cm}
                             readOnly
                             />
                         </div>
@@ -199,13 +206,14 @@ const ScanCrabWidth = () => {
                             id="crab-width"
                             placeholder="Enter Crab width in cm"
                             className="h-10"
+                            value={data?.width_cm}
                             />
                         </div>
 
                     </div>
                                 
                     <div className="flex w-full justify-center md:justify-end">
-                        <Button variant="outline">
+                        <Button variant="outline" onClick={addCrablogs}>
                             <Save className="h-4 w-4" />
                             Save Crab data
                         </Button>

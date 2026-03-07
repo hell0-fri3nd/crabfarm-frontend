@@ -4,6 +4,7 @@ import type { RootState } from "./store";
 
 interface statusDetails {
     "camera_status": boolean,
+    "camera_url": string,
     "extracted_data": string,
     "height_cm": number,
     "width_cm": number
@@ -15,17 +16,17 @@ interface startStatus {
 
 
 interface statusState {
-  data: statusDetails | null;
-  loading: 'idle' | 'pending' | 'succeeded' | 'failed';
-  error: string | null;
-  status: string | null;
+    data: statusDetails | null;
+    loading: 'idle' | 'pending' | 'succeeded' | 'failed';
+    error: string | null;
+    status: string | null;
 }
 
 const initialState: statusState = {
-  data: null,
-  loading: 'idle',
-  error: null,
-  status: ''
+    data: null,
+    loading: 'idle',
+    error: null,
+    status: ''
 };
 
 
@@ -39,6 +40,7 @@ export const status = createAsyncThunk<statusDetails, void, { rejectValue: strin
 
             const details: statusDetails = {
                 camera_status: response.data.camera_status,
+                camera_url: import.meta.env.VITE_API_RASPBERRY_URL + "camera/stream",
                 extracted_data: response.data.extracted_data || '',
                 height_cm: response.data.height_cm,
                 width_cm: response.data.width_cm,
