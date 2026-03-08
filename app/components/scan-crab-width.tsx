@@ -20,10 +20,12 @@ interface CameraData {
 }
 
 const ScanCrabWidth = () => {
+    const wsUrl = import.meta.env.VITE_SOCKET_URL;
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const cleanup = useMobileNavigation();
     const [cameraLoading,setCameraLoading] = React.useState(false);
+    const [weight,setWeight] = React.useState(0);
 
     const { data, error, isLoading } = useQuery<CameraData | null, string>({
         queryKey: ['camera-status'],
@@ -67,6 +69,28 @@ const ScanCrabWidth = () => {
 
     }, [error, dispatch]);
 
+    React.useEffect(() => {
+        const socket = new WebSocket("ws://192.168.100.11:4572/ws/v1/websockets/sensors");
+
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data); // parse JSON
+                if (data.weight !== undefined) {
+                setWeight(data.weight); // update React state
+                }
+            } catch (err) {
+                console.error("Invalid JSON:", event.data);
+            }
+        };
+
+        // socket.onopen = () => console.log("Connected!");
+        // socket.onmessage = (event) => console.log("Message:", event.data);
+        // socket.onerror = (err) => console.error("WebSocket error:", err);
+        // socket.onclose = () => console.log("Closed");
+
+        return () => socket.close();
+    }, []);
+
     const parsedData = React.useMemo(() => {
         if (!data?.extracted_data) return null;
         try {
@@ -94,7 +118,7 @@ const ScanCrabWidth = () => {
                 crab_id: parsedData?.id, 
                 type: "actual", 
                 width: data?.width_cm ?? 0, 
-                weight: 0
+                weight: weight
             })).unwrap();
             toast.success("Crab logs insert successfully", { position: "top-right" });
         } catch (err: unknown) {
@@ -191,6 +215,7 @@ const ScanCrabWidth = () => {
                             </Label>
                             <Input
                             id="crab-input"
+                            value={weight}
                             placeholder="Enter Crab weight in grams"
                             className="h-10"
                             readOnly
