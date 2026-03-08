@@ -70,7 +70,7 @@ const ScanCrabWidth = () => {
     }, [error, dispatch]);
 
     React.useEffect(() => {
-        const socket = new WebSocket("ws://192.168.100.11:4572/ws/v1/websockets/sensors");
+        const socket = new WebSocket(`${import.meta.env.VITE_SOCKET_URL}/sensors`);
 
         socket.onmessage = (event) => {
             try {
