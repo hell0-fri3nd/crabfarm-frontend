@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card } from './ui/card'
-import { Download, ImageIcon, Loader2 } from 'lucide-react'
+import { Download, ImageIcon, Images, Loader2 } from 'lucide-react'
 import { Button, Input, Label} from './ui'
 import { toPng } from 'html-to-image';
 
@@ -11,12 +11,18 @@ import type { AppDispatch, RootState } from '~/store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { crab } from '~/store/crab-slice';
 
+type QrText = {
+    id: number | null;
+    name: string | null;
+    group_by: string | null;
+};
+
 const QrCodeGenerator = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const [text, setText] = React.useState({
-            id: null,
-            name: null,   
-            group_by: null
+    const [text, setText] = React.useState<QrText>({
+        id: null,
+        name: null,   
+        group_by: null
     });
     const [group,setGroup] = React.useState<string | null>('A');
 
@@ -82,6 +88,51 @@ const QrCodeGenerator = () => {
             });
         }
     }, [text]);
+
+    const handleDownloadGroup = React.useCallback(async () => {
+        if (!groups || groups.length === 0) return;
+
+        setIsPending(true);
+
+        try {
+            for (const item of groups) {
+
+                // update QR content
+                setText({
+                    id: item.id,
+                    name: item.name,
+                    group_by: item.group_by
+                });
+
+                // wait for React to render
+                await new Promise((resolve) => setTimeout(resolve, 300));
+
+                if (!captureRef.current) continue;
+
+                const dataUrl = await toPng(captureRef.current, {
+                    cacheBust: true,
+                    pixelRatio: 3,
+                    backgroundColor: "#1F1E1F",
+                });
+
+                const link = document.createElement("a");
+                link.href = dataUrl;
+                link.download = `${item.name}.png`;
+                link.click();
+
+                await new Promise((resolve) => setTimeout(resolve, 200));
+            }
+        } catch (err) {
+            console.error("Group download failed:", err);
+        } finally {
+            setIsPending(false);
+            setText({
+                id: null,
+                name: null,
+                group_by: null
+            });
+        }
+    }, [groups]);
 
     const handleCrabChange = (value: string | null) => {
         if (!value) return;
@@ -164,7 +215,24 @@ const QrCodeGenerator = () => {
                     </div>
 
                                 
-                    <div className="flex w-full justify-center gap-2 md:justify-end md:grid-cols-2">
+                    <div className="flex w-full gap-1 justify-end md:grid-cols-2">
+
+                        <Button 
+                        onClick={handleDownloadGroup} 
+                        disabled={isPending || text.name === ''}
+                        className="outline">
+                            {
+                                isPending ? (
+                                    <Loader2 className=" animate-spin" />
+                                ) : (
+                                    <Images  />
+                                )
+                            }
+                            <span className="hidden sm:inline">
+                                {isPending ? "Generating Images..." : "Group Downloads"}
+                            </span>
+                        </Button>
+             
                         <Button 
                         onClick={handleDownload} 
                         disabled={isPending || text.name === ''}
@@ -176,7 +244,9 @@ const QrCodeGenerator = () => {
                                 <Download  />
                             )
                         }
-                            {isPending ? "Generating Image..." : "Download Image"}
+                            <span className="hidden sm:inline">
+                                {isPending ? "Generating Image..." : "Download Image"}
+                            </span>
                         </Button>
                     </div>
 
