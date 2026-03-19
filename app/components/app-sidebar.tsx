@@ -6,8 +6,8 @@ import {
     LayoutGrid,
     Camera,
     Logs,
-    ClipboardClock,
-    UserCog
+    UserCog,
+    CalendarCog
 } from 'lucide-react';
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '~/components/ui/sidebar';
@@ -25,7 +25,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Configuration',
         href: '/page/configuration',
-        icon: ClipboardClock,
+        icon: CalendarCog,
     },
     {
         title: 'Logs',
