@@ -8,6 +8,12 @@ const WeighAndScan = () => {
     const mobile = useIsMobile();
     return (
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+            <div className="border-b border-border/40 py-5">
+                <div className="max-w-7xl">
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Weigh and Scan</h1>
+                    <p className="text-muted-foreground">Generate QR code and Scan Crab Width</p>
+                </div>
+            </div>
 
             {
                 mobile && 
