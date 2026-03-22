@@ -17,6 +17,7 @@ export default [
     // Protected section
     route("/page", "routes/page-layout.tsx", [
         route("dashboard", "routes/page/dashboard.tsx"),
+        route("configuration", "routes/page/configuration.tsx"),
         route("logs", "routes/page/logs.tsx"),
         route("weigh-and-scan", "routes/page/weigh-and-scan.tsx"),
     ]),

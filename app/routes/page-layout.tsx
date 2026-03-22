@@ -12,13 +12,18 @@ const breadcrumbs: BreadcrumbItem[] = [
     href: '/page/dashboard',
   },
   {
+    title: 'Configuration',
+    href: '/page/configuration',
+  },
+  {
     title: 'Logs',
     href: '/page/logs',
   },
   {
-    title: 'Weigh and Snap',
+    title: 'Weigh and Scan',
     href: '/page/weigh-and-scan',
   }
+
 ];
 
 export default function PageLayout() {
