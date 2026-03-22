@@ -16,10 +16,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     href: '/page/configuration',
   },
   {
-    title: 'Logs',
-    href: '/page/logs',
-  },
-  {
     title: 'Weigh and Scan',
     href: '/page/weigh-and-scan',
   }
