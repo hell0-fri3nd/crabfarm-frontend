@@ -14,7 +14,7 @@ const Configuration = () => {
 
             <div className="border-b border-border/40 py-5">
                 <div className="max-w-7xl">
-                    <h1 className="text-4xl font-bold tracking-tight text-foreground">Configuration</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Configuration</h1>
                     <p className="text-muted-foreground">Manage your feeding dispensers in real-time</p>
                 </div>
             </div>
