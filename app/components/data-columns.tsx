@@ -25,11 +25,25 @@ const SortableHeader = ({ column, label, center = false }: SortableHeaderProps) 
 
 export const DataColumns: ColumnDef<Crab>[] = [
     {
+        accessorKey: 'log_id',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="ID" />
+        ),
+        cell: ({ row }) => <div className="font-medium text-center">{row.getValue('log_id')}</div>,
+    },
+    {
         accessorKey: 'crab_id',
         header: ({ column }) => (
             <SortableHeader column={column} label="Crab ID" />
         ),
         cell: ({ row }) => <div className="font-medium text-center">{row.getValue('crab_id')}</div>,
+    },
+    {
+        accessorKey: 'crab_name',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="Crab Name" />
+        ),
+        cell: ({ row }) => <div className="font-medium text-center">{row.getValue('crab_name')}</div>,
     },
     {
         accessorKey: 'type',
@@ -53,8 +67,26 @@ export const DataColumns: ColumnDef<Crab>[] = [
             <SortableHeader column={column} label="Weight (kg)" />
         ),
         cell: ({ row }) => (
-        <div className="text-center">{(row.getValue('weight') as number).toFixed(2)}</div>
+            <div className="text-center">{(row.getValue('weight') as number).toFixed(2)}</div>
         ),
+    },
+    {
+        accessorKey: 'created_at',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="Date" />
+        ),
+        cell: ({ row }) => {
+            const date = new Date(row.getValue('created_at'));
+            const formatted = date.toLocaleString('en-US', {
+                month: 'short',       // Mar
+                day: 'numeric',       // 22
+                year: 'numeric',      // 2026
+                hour: 'numeric',      // 5
+                minute: '2-digit',    // 50
+                hour12: true          // PM
+            });
+            return <div className="text-center">{formatted}</div>
+        },
     },
     {
     accessorKey: 'group_by',
