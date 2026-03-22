@@ -28,14 +28,17 @@ const mainNavItems: NavItem[] = [
         icon: CalendarCog,
     },
     {
-        title: 'Logs',
-        href: '/page/logs',
-        icon: Logs,
-    },
-    {
         title: 'Weigh and Scan',
         href: '/page/weigh-and-scan',
         icon: Camera,
+    }
+];
+
+const othersNavItems: NavItem[] = [
+    {
+        title: 'Logs',
+        href: '/page/logs',
+        icon: Logs,
     }
 ];
 
@@ -66,6 +69,7 @@ const AppSidebar = () => {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} name="Main" />
+                <NavMain items={othersNavItems} name="Others" />
             </SidebarContent>
 
             <SidebarFooter>
