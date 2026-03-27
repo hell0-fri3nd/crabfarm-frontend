@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import SensorCard from '~/components/sensor-card';
 import type { SensorData } from '~/types';
 import CardTemplate from "~/components/card-template";
+import CrabChart from "~/components/crab-chart";
 
 const dummySensorData: SensorData[] = [
   {
@@ -70,18 +71,26 @@ const Dashbooard = () => {
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-0 overflow-x-auto">
 
             <TabsList className="w-full sm:w-1/4 grid grid-cols-2 sm:grid-cols-2">
+
+              <TabsTrigger value="predictions">
+                <ChartNoAxesCombined className="w-7 h-7" />
+                <span>Predictions</span>
+              </TabsTrigger>
+
               <TabsTrigger value="sensors">
                 <Droplet className="w-4 h-4" />
                 <span>Sensors</span>
               </TabsTrigger>
 
-              <TabsTrigger value="predictions">
-                  <ChartNoAxesCombined className="w-7 h-7" />
-                  <span>Predictions</span>
-                </TabsTrigger>
             </TabsList> 
 
           <div className="grid auto-rows-min gap-4 sm:grid-cols-1">
+
+            <TabsContent value="predictions">
+
+              <CrabChart />
+  
+            </TabsContent>
 
             <TabsContent value="sensors">
 
@@ -104,18 +113,7 @@ const Dashbooard = () => {
 
             </TabsContent>
 
-            <TabsContent value="predictions">
-
-              <CardTemplate 
-              description="Predictive analytics of crab width and weight based on data on previous days and months." 
-              status={false} 
-              footerText="404">
-                Coming soon...
-              </CardTemplate>
-  
-            </TabsContent>
-          </div>
-
+          </div>     
         </div>
 
       </Tabs>
