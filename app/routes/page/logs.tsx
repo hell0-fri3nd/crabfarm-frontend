@@ -57,7 +57,7 @@ const Logs = () => {
             </div>
 
             <div className="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border p-8">
-                <div className="w-full max-w-5xl">
+                <div className="w-full">
                     <DataTable columns={DataColumns} data={data || []} />
                 </div>
             </div>
