@@ -2,11 +2,8 @@
 
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Biohazard, ChartNoAxesCombined, Circle, Cloud, CloudFog, Droplet, Droplets, FlaskConical, SprayCan, ThermometerSun, Wind } from 'lucide-react';
+import { Biohazard, ChartNoAxesCombined, Droplet, Droplets, FlaskConical, ThermometerSun, Wind } from 'lucide-react';
 import OnlineStatus from '~/components/online-status';
-// import { PlaceholderPattern } from '~/components/placeholder-pattern';
-// import { Button, Input, Label } from '~/components/ui';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 import SensorCard from '~/components/sensor-card';
 import type { SensorData } from '~/types';
 import CardTemplate from "~/components/card-template";

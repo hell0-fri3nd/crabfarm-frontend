@@ -8,3 +8,8 @@ export type Crab = {
   group_by: string;
   crab_name: string;
 };
+
+export type ApiCrabResponse = {
+  status_code: number;
+  detail: string;
+};

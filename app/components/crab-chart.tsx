@@ -25,12 +25,15 @@ import { useNavigate } from 'react-router'
 import { useMobileNavigation } from '~/hooks/user-mobile-navigations'
 import { accessExpired, clearAuth, logout, refreshExpired } from '~/store/auth/auth-slice'
 import { persistor, type AppDispatch } from '~/store/store'
+import { postPredictedCrab } from '~/api/predict'
+import { toast } from 'sonner'
 
 interface ProcessedData {
   date: string
   width: number
   weight: number
 }
+
 
 // Transform raw logs into chart-ready data
 function transformLogs(logs: Crab[]): { actual: ProcessedData[]; prediction: ProcessedData[] } {
@@ -63,12 +66,13 @@ function buildCrabData(logs?: Crab[]) {
     crabMap[log.crab_id].push(log)
   })
 
-  const CRAB_DATA: Record<string, { actual: ProcessedData[]; prediction: ProcessedData[]; name: string }> = {}
+  const CRAB_DATA: Record<string, { actual: ProcessedData[]; prediction: ProcessedData[]; name: string; crab_id: Number }> = {}
 
   Object.entries(crabMap).forEach(([crabId, crabLogs]) => {
     const { actual, prediction } = transformLogs(crabLogs)
-    const crabName = crabLogs[0]?.crab_name || crabId
-    CRAB_DATA[crabId] = { actual, prediction, name: crabName }
+    const crabName = crabLogs[0]?.crab_name
+    const crabID = Number(crabId)
+    CRAB_DATA[crabId] = { actual, prediction, name: crabName, crab_id: crabID }
   })
 
   return CRAB_DATA
@@ -94,8 +98,8 @@ const chartConfig = {
 const CrabChart = () => {
 
   const { data, isLoading, error } = useQuery<Crab[]>({
-    queryKey: ['crabLogs', 'actual'],
-    queryFn: () => getCrabLogs('actual'),
+    queryKey: ['crabLogs', 'all'],
+    queryFn: () => getCrabLogs('all'),
     refetchInterval: 500,
     retry: false, 
   });
@@ -142,11 +146,38 @@ const CrabChart = () => {
     return <div className="p-4">No data available...</div>
   }
 
-
   const crab_data = CRAB_DATA[selectedCrab]
   const displayData = isActual ? crab_data.actual : crab_data.prediction
   const crabName = crab_data.name
+  
+  const generatePrediction = async (e: React.FormEvent) => {
+    e.preventDefault();
 
+    try {
+      const { status_code, detail } = await postPredictedCrab(
+        Number(crab_data.crab_id)
+      );
+
+      const toastType =
+        status_code === 201
+          ? "success"
+          : status_code === 200
+          ? "warning"
+          : "error";
+
+      toast[toastType](detail ?? "Failed to generate prediction", {
+        position: "top-right",
+      });
+
+      console.log("Prediction response:", { status_code, detail });
+    } catch (error: any) {
+      toast.error(
+        error?.detail ?? "Something went wrong",
+        { position: "top-right" }
+      );
+    }
+  
+  };
   return (
    <Card>
       <CardHeader>
@@ -160,7 +191,7 @@ const CrabChart = () => {
         </div>
         
      
-        <div className="flex flex-col gap-3 sm:grid-cols-2 sm:flex-row items-center sm:justify-between">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-fit">
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -169,7 +200,7 @@ const CrabChart = () => {
                 className="w-full sm:w-auto justify-between gap-2 border-border/50 hover:bg-accent"
               >
                 <span className="truncate">{crabName}</span>
-                <ChevronDown className="h-4 w-4 opacity-50   31212hrink-0" />
+                <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
               </Button>
             </DropdownMenuTrigger>
 
@@ -191,16 +222,19 @@ const CrabChart = () => {
               onCheckedChange={(checked) => setIsActual(!checked)}
             />
           </div>
+
+          <Button variant="outline" className="w-full sm:w-auto justify-between gap-2 border-border/50 hover:bg-accent" onClick={generatePrediction}>
+            Generate Prediction
+          </Button>
         </div>
         
       </CardHeader>
 
       <CardContent>
-        {/* <div className="overflow-x-auto">
-          <div className="min-w-[800px]"> */}
+
         <ChartContainer config={chartConfig} className="h-90 w-full">
-              <LineChart
-                        width={800}   // 👈 important
+          <LineChart
+          width={800}  
           height={350}
                 data={displayData}
                 margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
@@ -258,8 +292,6 @@ const CrabChart = () => {
                 />
               </LineChart>
         </ChartContainer>
-{/* </div>
-</div> */}
       </CardContent>
 
       <CardFooter>
