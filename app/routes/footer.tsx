@@ -25,7 +25,7 @@ const Footer = () => {
         {/* RIGHT side */}
         <div className="flex items-center justify-center sm:justify-end">
           <p className="text-sm text-muted-foreground text-right">
-            v0.0.0
+            v0.2.0
           </p>
         </div>
       </div>
