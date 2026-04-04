@@ -45,3 +45,8 @@ export interface SensorData {
   rangesDescription: string;
   percentage: number;
 }
+
+export type ApiResponse = {
+  status_code: number;
+  detail: string;
+};

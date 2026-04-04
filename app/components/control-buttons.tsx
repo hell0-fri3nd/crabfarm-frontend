@@ -1,22 +1,69 @@
 import React, { useState } from 'react'
 import { Button } from './ui'
 import { Pause, Play, Square } from 'lucide-react'
+import { toast } from 'sonner';
+import { pauseFeeding, startFeeding, stopFeeding } from '~/api/control';
 
 const ControlButtons = () => {
     const [systemStatus, setSystemStatus] = React.useState<'stopped' | 'running' | 'paused'>('stopped');
     const [activeFeeders, setActiveFeeders] = React.useState<Record<string, boolean>>({});
     
-    const handleStart = () => {
-        setSystemStatus('running');
+    const handleStart = async () => {
+        try {
+            setSystemStatus('running');
+
+            const { status_code, detail } = await startFeeding();
+            const toastType = status_code === 200 ? "success" : detail.success ? "success" : "error";
+            
+            toast[toastType](detail.success ? "Feeding started" : "Failed to start feeding", {
+                position: "top-right",
+            });
+                       
+
+        } catch (error: any) {
+            toast.error(
+                error?.detail ?? "Something went wrong",
+                { position: "top-right" }
+            );
+        }
     };
 
-    const handlePause = () => {
-        setSystemStatus('paused');
+    const handlePause = async () => {
+        try {
+            setSystemStatus('paused');
+
+            const { status_code, detail } = await pauseFeeding();
+            const toastType = status_code === 200 ? "success" : detail.success ? "success" : "error";
+            
+            toast[toastType](detail.success ? "Feeding paused" : "Failed to pause feeding", {
+                position: "top-right",
+            });
+
+        } catch (error: any) {
+            toast.error(
+                error?.detail ?? "Something went wrong",
+                { position: "top-right" }
+            );
+        }
     };
 
-    const handleStop = () => {
-        setSystemStatus('stopped');
-        setActiveFeeders({});
+    const handleStop = async () => {
+        try {
+            setSystemStatus('stopped');
+
+            const { status_code, detail } = await stopFeeding();
+            const toastType = status_code === 200 ? "success" : detail.success ? "success" : "error";
+            
+            toast[toastType](detail.success ? "Feeding stopped" : "Failed to stop feeding", {
+                position: "top-right",
+            });
+
+        }catch(error: any) {
+            toast.error(
+                error?.detail ?? "Something went wrong",
+                { position: "top-right" }
+            );
+        }
     };
 
     return (

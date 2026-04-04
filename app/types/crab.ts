@@ -9,7 +9,3 @@ export type Crab = {
   crab_name: string;
 };
 
-export type ApiCrabResponse = {
-  status_code: number;
-  detail: string;
-};
