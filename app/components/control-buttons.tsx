@@ -62,14 +62,13 @@ const ControlButtons = () => {
             <div className="text-sm text-right">
                 <span className="text-muted-foreground">Status: </span>
                 <span
-                    className={`font-semibold ${
-                        systemStatus === 'running'
-                            ? 'text-green-600'
-                            : systemStatus === 'paused'
-                            ? 'text-yellow-600'
-                            : 'text-red-600'
-                    }`}
-                >
+                className={`font-semibold ${
+                    systemStatus === 'running'
+                        ? 'text-green-600'
+                        : systemStatus === 'paused'
+                        ? 'text-yellow-600'
+                        : 'text-red-600'
+                }`}>
                     {systemStatus === 'running' && 'Running'}
                     {systemStatus === 'paused' && 'Paused'}
                     {systemStatus === 'stopped' && 'Stopped'}
