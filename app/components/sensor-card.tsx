@@ -13,7 +13,7 @@ import { Progress } from './ui/progress'
 type SensorCardProps = {
   Icon: LucideIcon
   description: string
-  value: string | number,
+  value: string,
   rangesDescription?: string,
   percentage: number
 }
