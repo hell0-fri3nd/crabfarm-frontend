@@ -39,11 +39,13 @@ export interface User {
 }
 
 export interface SensorData {
-  Icon: LucideIcon;
-  description: string;
-  value: string | number;
-  rangesDescription: string;
-  percentage: number;
+    Icon: LucideIcon;
+    description: string;
+    value: string;
+    rangesDescription: string;
+    percentage: number;
+    key: string;
+    maxValue: number;
 }
 
 export type ApiResponse = {

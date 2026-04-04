@@ -1,60 +1,99 @@
-
-
-
+import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Biohazard, ChartNoAxesCombined, Droplet, Droplets, FlaskConical, ThermometerSun, Wind } from 'lucide-react';
-import OnlineStatus from '~/components/online-status';
 import SensorCard from '~/components/sensor-card';
 import type { SensorData } from '~/types';
 import CardTemplate from "~/components/card-template";
 import CrabChart from "~/components/crab-chart";
 
-const dummySensorData: SensorData[] = [
-  {
-    Icon: ThermometerSun,
-    description: 'Temperature',
-    value: "28.50°C",
-    rangesDescription: 'Range: 0 - 40 °C',
-    percentage: (28.5 / 40) * 100,
-  },
-  {
-    Icon: Droplet,
-    description: 'pH Level',
-    value: "7.20",
-    rangesDescription: 'Range: 0 - 14',
-    percentage: (7.2 / 14) * 100,
-  },
-  {
-    Icon: Droplets,
-    description: 'Salinity (PSU)',
-    value: "35.20 PSU",
-    rangesDescription: 'Range: 0 - 40 PSU',
-    percentage: (35.2 / 40) * 100,
-  },
-  {
-    Icon: FlaskConical,
-    description: 'Ammonia',
-    value: "0.02 mg/L",
-    rangesDescription: 'Range: 0 - 1 mg/L',
-    percentage: (0.02 / 1) * 100,
-  },
-  {
-    Icon: Wind,
-    description: 'Dissolved Oxygen',
-    value: "7.50 mg/L",
-    rangesDescription: 'Range: 0 - 15 mg/L',
-    percentage: (7.5 / 15) * 100,
-  },
-  {
-    Icon: Biohazard,
-    description: 'TDS (Total Dissolved Solids)',
-    value: "1850.00 ppm",
-    rangesDescription: 'Range: 0 - 2500 ppm',
-    percentage: (1850 / 2500) * 100,
-  }
-];
 
 const Dashbooard = () => {
+  const [data,setData] = React.useState<SensorData[]>([
+    { Icon: ThermometerSun, description: 'Temperature', value: '0°C', rangesDescription: '0-40°C', percentage: 0, key: 'temperature', maxValue: 40 },
+    { Icon: Droplet, description: 'pH Level', value: '0', rangesDescription: '0-14', percentage: 0, key: 'ph', maxValue: 14 },
+    { Icon: Biohazard, description: 'TDS (Salinity)', value: '0 PSU', rangesDescription: '0-30ppt', percentage: 0, key: 'tds', maxValue: 30 },
+    { Icon: FlaskConical, description: 'Ammonia', value: '0 mg/L', rangesDescription: '0-3ppm', percentage: 0, key: 'ammonium', maxValue: 3 },
+    { Icon: Wind, description: 'Dissolved Oxygen', value: '0', rangesDescription: '0-15ppm', percentage: 0, key: 'do', maxValue: 15 }
+  ]);
+  const [isConnected, setIsConnected] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    const socket = new WebSocket(`${import.meta.env.VITE_SOCKET_URL}/sensors`);
+
+    // Connection opened
+    socket.onopen = () => {
+      console.log("WebSocket connected");
+      setIsConnected(true);
+    };
+  
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        setData(prev =>
+            prev.map(sensor => {
+              const val = data[sensor.key];
+              if (val === undefined) return sensor;
+
+              let valueStr = "";
+              // Assign units based on sensor key
+              switch(sensor.key.toLowerCase()) {
+
+                case 'do':
+                  valueStr = `${val}ppm`;
+                break;
+
+                case 'temperature':
+                  valueStr = `${val}°C`;
+                break;
+
+                case 'ph':
+                  valueStr = `${val}`;
+                break;
+
+                case 'tds':
+                  valueStr = `${val}ppt`;
+                break;
+                
+                case 'turbidity':
+                  valueStr = `${val}ppt`;
+                break;
+
+                case 'ammonium':
+                  valueStr = `${val}ppm`;
+                break;
+              }
+              return {
+                ...sensor,
+                value: valueStr,
+                percentage: (val / sensor.maxValue) * 100,
+              };
+            })
+          );
+      } catch (err) {
+        console.error("Invalid JSON:", event.data);
+      }
+    };
+
+    // Handle errors
+    socket.onerror = (err) => {
+      console.error("WebSocket error:", err);
+      setIsConnected(false);
+    };
+
+    // Connection closed
+    socket.onclose = () => {
+      console.log("WebSocket closed");
+      setIsConnected(false);
+    };
+    // socket.onopen = () => console.log("Connected!");
+    // socket.onmessage = (event) => console.log("Message:", event.data);
+    // socket.onerror = (err) => console.error("WebSocket error:", err);
+    // socket.onclose = () => console.log("Closed");
+  
+    return () => socket.close();
+  }, []);
+
   return (
     <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
       <div className="border-b border-border/40 py-5">
@@ -63,7 +102,7 @@ const Dashbooard = () => {
             <p className="text-muted-foreground">Real-time monitoring and Prediction for your crab farming operation</p>
         </div>
       </div>
-      <Tabs defaultValue="sensors">
+      <Tabs defaultValue="predictions">
 
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-0 overflow-x-auto">
 
@@ -84,17 +123,17 @@ const Dashbooard = () => {
           <div className="grid auto-rows-min gap-4 sm:grid-cols-1">
 
             <TabsContent value="predictions">
-
               <CrabChart />
-  
             </TabsContent>
 
             <TabsContent value="sensors">
-
-              <CardTemplate description="Realtime time update sensor data from all connected devices." status={false} >
+              <CardTemplate 
+              description="Realtime time update sensor data from all connected devices." 
+              status={isConnected} 
+              >
                 <div className="flex h-full flex-1 flex-col gap-0 rounded-xl overflow-x-auto">
                   <div className="grid auto-rows-min gap-2 sm:grid-cols-3">
-                    {dummySensorData.map((sensor, index) => (
+                    {data.map((sensor, index) => (
                       <SensorCard
                       key={index}
                       Icon={sensor.Icon}
@@ -107,7 +146,6 @@ const Dashbooard = () => {
                   </div>
                 </div>
               </CardTemplate>
-
             </TabsContent>
 
           </div>     
