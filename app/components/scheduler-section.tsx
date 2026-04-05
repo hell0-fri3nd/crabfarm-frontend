@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from './ui'
-import { Clock, Plus, X } from 'lucide-react'
+import { CalendarClock, Clock, X } from 'lucide-react'
 import type { DispenserGroup } from '~/types/configuration';
 import ScheduleModal from './modal/schedule-modal';
 
@@ -35,7 +35,7 @@ const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
                     <Button
                     onClick={() => setOpenSchedule(true)}
                     size="lg">
-                        <Plus className="w-12 h-12" />
+                        <CalendarClock className="w-12 h-12" />
                         <span className='hidden md:inline'>Add Schedule</span>
                     </Button>
                 </div>

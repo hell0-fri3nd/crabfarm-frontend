@@ -63,9 +63,9 @@ const ScheduleModal = ({open, onOpenChange} : {open: boolean, onOpenChange: (ope
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" >Cancel</Button>
+              <Button variant="outline" size="lg" >Cancel</Button>
             </DialogClose>
-            <Button>Create Schedule</Button>
+            <Button size="lg">Create Schedule</Button>
           </DialogFooter>
 
         </DialogContent>
