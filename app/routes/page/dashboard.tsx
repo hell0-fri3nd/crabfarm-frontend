@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Biohazard, ChartNoAxesCombined, Droplet, Droplets, FlaskConical, ThermometerSun, Wind } from 'lucide-react';
+import { Biohazard, ChartNoAxesCombined, Droplet, FlaskConical, ThermometerSun, Wind } from 'lucide-react';
 import SensorCard from '~/components/sensor-card';
 import type { SensorData } from '~/types';
 import CardTemplate from "~/components/card-template";

@@ -13,7 +13,8 @@ import { ThemeProvider } from "./components/theme-provider";
 import Bubbles from "./components/custom/bubbles";
 import { Provider, useDispatch } from "react-redux";
 import { store, persistor, type AppDispatch  } from "./store/store";
-import { PersistGate } from "redux-persist/integration/react";
+import { PersistGate } from "redux-persist/lib/integration/react";
+// import { PersistGate } from "redux-persist/lib/integration/react.js";
 import InfiniteProgressBar from "./components/infinite-progress"
 import { refreshExpired, accessExpired, logout,clearAuth } from "./store/auth/auth-slice";
 import { useGetStatusQuery } from "./store/auth/auth-status-slice";
@@ -21,6 +22,7 @@ import { useMobileNavigation } from "./hooks/user-mobile-navigations";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./query-client";
 import { Toaster } from "./components/ui/sonner";
+
 
 
 export const links: Route.LinksFunction = () => [

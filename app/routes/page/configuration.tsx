@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router';
 import { useMobileNavigation } from '~/hooks/user-mobile-navigations';
 import { persistor, type store, type AppDispatch } from '~/store/store';
 import { toast } from 'sonner';
+import SchedulerSection from '~/components/scheduler-section';
+
 
 interface dispensers {
     states: []
@@ -129,6 +131,8 @@ const Configuration = () => {
                 )
                 )}
             </div>
+
+            <SchedulerSection groups={groupBy} />
 
         </div>
     )
