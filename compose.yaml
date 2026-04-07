@@ -11,10 +11,16 @@ services:
   server:
     build:
       context: .
+    container_name: crabfarm-frontend
+    env_file:
+      - .env
     environment:
       NODE_ENV: production
+      PORT: 7987
+      HOST: 0.0.0.0
     ports:
-      - 7000:7000
+      - "7987:7987"
+    command: npm run start
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
