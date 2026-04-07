@@ -36,7 +36,7 @@ export const status = createAsyncThunk<statusDetails, void, { rejectValue: strin
         try {
             const state = thunkAPI.getState() as RootState;
 
-            const response = await api.get('raspberry/camera/status');
+            const response = await api.get('gateway/raspberry/camera/status');
 
             const details: statusDetails = {
                 camera_status: response.data.camera_status,
@@ -77,7 +77,7 @@ export const start = createAsyncThunk<startStatus, void, { rejectValue: string }
         try {
 
             const state = thunkAPI.getState() as RootState;
-            const response = await api.put('raspberry/camera/start',{});
+            const response = await api.put('gateway/raspberry/camera/start',{});
             
             const status: startStatus = {
                 status: response.data.camera_status,
