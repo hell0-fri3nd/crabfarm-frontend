@@ -71,7 +71,7 @@ const SchedulerCard = ({ schedule, onToggle, onDelete }: SchedulerCardProps) => 
 
                     {/* Header row with badges */}
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div>
+                        <div className='flex flex-wrap gap-2'>
                             <Badge variant={schedule.is_enabled ? "default" : "secondary"} className="gap-1.5 capitalize">
                                 <TypeIcon className="h-3 w-3" />
                                 {schedule.type}
