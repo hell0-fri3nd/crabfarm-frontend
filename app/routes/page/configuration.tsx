@@ -124,6 +124,7 @@ const Configuration = () => {
                                 label={`Feed ${data.label}${key+1}`} 
                                 checked={!Boolean(localData[value - 1])}
                                 onCheckedChange={(checked) => handleToggle(value - 1)}
+                                className="p-4 rounded-lg border border-border/30 hover:border-border/60 transition-colors bg-card/50"
                                 />
                             ))}
                         </div>

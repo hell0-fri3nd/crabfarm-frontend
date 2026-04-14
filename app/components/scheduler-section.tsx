@@ -3,6 +3,10 @@ import { Button } from './ui'
 import { CalendarClock, Clock, X } from 'lucide-react'
 import type { DispenserGroup } from '~/types/configuration';
 import ScheduleModal from './modal/schedule-modal';
+import { getScheduler } from '~/api/scheduler';
+import { useQuery } from '@tanstack/react-query';
+import type { SchedulerResponse } from '~/types/scheduler';
+import SchedulerCard from './scheduler-card';
 
 interface FeedingSchedule {
     id: number;
@@ -16,6 +20,8 @@ const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
 
     const [schedules, setSchedules] = React.useState<FeedingSchedule[]>([]);
     const [openSchedule,setOpenSchedule] = React.useState(false);
+    const [toggle,setToggle] = React.useState(false);
+
     const getGroupNames = (groupIds: string[]) => {
         return groupIds
         .map((label) => groups.find((g) => g.label === label)?.label)
@@ -23,6 +29,14 @@ const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
         .join(', ');
     };
 
+    const { data, isLoading, error } = useQuery<SchedulerResponse>({
+        queryKey: [],
+        queryFn: () => getScheduler(),
+        refetchInterval: 1000,
+        retry: false, 
+    });
+
+    console.log(data?.data);
     return (
         <div>            
             <section className="space-y-6 mt-16 pt-12 border-t border-border/30">
@@ -41,7 +55,7 @@ const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
                 </div>
 
                 {/* Schedules List */}
-                {schedules.length === 0 ? (
+                {data?.data?.length === 0 ? (
                     <div className="rounded-xl border border-dashed border-border/40 p-12 text-center">
                         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-muted/40 mb-4">
                             <Clock className="w-6 h-6 text-muted-foreground" />
@@ -50,40 +64,13 @@ const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
                         <p className="text-sm text-muted-foreground mt-1">Create your first automatic feeding schedule</p>
                     </div>
                 ) : (
-                    <div className="grid gap-3">
-                        {schedules.map((schedule) => (
-                            <div
-                            key={schedule.id}
-                            className="flex items-center justify-between rounded-lg border border-border/50 bg-card/40 backdrop-blur-sm p-4 hover:bg-card/60 hover:border-border transition-all group"
-                            >
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-foreground/10 text-foreground text-xs font-semibold uppercase">
-                                        {schedule.type}
-                                    </span>
-                                    <span className="text-sm font-medium text-foreground truncate">
-                                        {getGroupNames(schedule.groups)}
-                                    </span>
-                                    </div>
-                                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                                    <span className="flex items-center gap-1.5">
-                                        <Clock className="w-3.5 h-3.5" />
-                                        {schedule.time}
-                                    </span>
-                                    <span className="text-border/60">•</span>
-                                    <span className="font-medium text-foreground/70">{schedule.portion}g</span>
-                                </div>
-                            </div>
-                            <Button
-                            variant="ghost"
-                            className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground hover:bg-muted/50 h-8 w-8 p-0 transition-opacity"
-                            size="icon">
-                                <X className="w-4 h-4" />
-                            </Button>
-                            </div>
+                    <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {data?.data?.map((schedule) => (
+                            <SchedulerCard schedule={schedule}  />
                         ))}
                     </div>
                 )}
+
             </section>
             <ScheduleModal open={openSchedule} onOpenChange={setOpenSchedule} />
         </div>
