@@ -64,16 +64,13 @@ const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
                         <p className="text-sm text-muted-foreground mt-1">Create your first automatic feeding schedule</p>
                     </div>
                 ) : (
-
-         
-                    <div className="grid gap-3">
+                    <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {data?.data?.map((schedule) => (
-
                             <SchedulerCard schedule={schedule}  />
-
                         ))}
                     </div>
                 )}
+
             </section>
             <ScheduleModal open={openSchedule} onOpenChange={setOpenSchedule} />
         </div>

@@ -57,7 +57,7 @@ const ScheduleModal = ({open, onOpenChange} : {open: boolean, onOpenChange: (ope
       });
 
       onOpenChange(false);
-
+      setStatusButton(false);
     }
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
