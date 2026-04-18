@@ -7,36 +7,28 @@ import { getScheduler } from '~/api/scheduler';
 import { useQuery } from '@tanstack/react-query';
 import type { SchedulerResponse } from '~/types/scheduler';
 import SchedulerCard from './scheduler-card';
+import YesCancelDialog from './yes-cancel-dialog';
 
-interface FeedingSchedule {
-    id: number;
-    type: 'row' | 'column';
-    groups: string[];
-    time: string;
-    portion: number;
-}
+// interface FeedingSchedule {
+//     id: number;
+//     type: 'row' | 'column';
+//     groups: string[];
+//     time: string;
+//     portion: number;
+// }
 
 const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
 
-    const [schedules, setSchedules] = React.useState<FeedingSchedule[]>([]);
+    // const [schedules, setSchedules] = React.useState<FeedingSchedule[]>([]);
     const [openSchedule,setOpenSchedule] = React.useState(false);
-    const [toggle,setToggle] = React.useState(false);
-
-    const getGroupNames = (groupIds: string[]) => {
-        return groupIds
-        .map((label) => groups.find((g) => g.label === label)?.label)
-        .filter(Boolean)
-        .join(', ');
-    };
 
     const { data, isLoading, error } = useQuery<SchedulerResponse>({
         queryKey: [],
         queryFn: () => getScheduler(),
-        refetchInterval: 1000,
+        refetchInterval: 500,
         retry: false, 
     });
 
-    console.log(data?.data);
     return (
         <div>            
             <section className="space-y-6 mt-16 pt-12 border-t border-border/30">
@@ -55,7 +47,7 @@ const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
                 </div>
 
                 {/* Schedules List */}
-                {data?.data?.length === 0 ? (
+                {!data?.data || (Array.isArray(data.data) && data.data.length === 0) ? (
                     <div className="rounded-xl border border-dashed border-border/40 p-12 text-center">
                         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-muted/40 mb-4">
                             <Clock className="w-6 h-6 text-muted-foreground" />
@@ -65,7 +57,7 @@ const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
                     </div>
                 ) : (
                     <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {data?.data?.map((schedule) => (
+                        {Array.isArray(data.data) && data.data.map((schedule) => (
                             <SchedulerCard schedule={schedule}  />
                         ))}
                     </div>
@@ -73,6 +65,7 @@ const SchedulerSection = ({groups}: { groups: DispenserGroup[] }) => {
 
             </section>
             <ScheduleModal open={openSchedule} onOpenChange={setOpenSchedule} />
+
         </div>
     )
 }
