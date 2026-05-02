@@ -36,7 +36,7 @@ const mainNavItems: NavItem[] = [
 
 const othersNavItems: NavItem[] = [
     {
-        title: 'Logs',
+        title: 'Crab Logs',
         href: '/page/logs',
         icon: Logs,
     }
