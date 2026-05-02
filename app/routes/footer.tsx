@@ -37,7 +37,7 @@ import { Link } from "react-router"
       
 const Footer = () => {
   const currentYear = new Date().getFullYear()
-  const version = '1.2.0'
+  const version = '1.3.0'
 
   const socialLinks = [
     {
@@ -159,11 +159,11 @@ const Footer = () => {
           <div className="flex flex-col gap-2">
             <p className="text-xs text-muted-foreground">
               <span className="sr-only">Copyright notice:</span>
-              © {currentYear} Art Lisboa.
+              © {currentYear} Art Lisboa
               <span className="sr-only">All rights reserved.</span>
             </p>
             <p className="text-xs text-muted-foreground">
-              Built with Next.js and ShadCN UI.
+              Built with React.js and ShadCN UI.
             </p>
           </div>
 
