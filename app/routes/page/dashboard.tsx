@@ -150,20 +150,20 @@ const Dashbooard = () => {
             <p className="text-muted-foreground">Real-time monitoring and Prediction for your crab farming operation</p>
         </div>
       </div>
-      <Tabs defaultValue="predictions">
+      <Tabs defaultValue="sensors">
 
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-0 overflow-x-auto">
 
             <TabsList className="w-full sm:w-1/4 grid grid-cols-2 sm:grid-cols-2">
+              
+              <TabsTrigger value="sensors">
+                <Droplet className="w-4 h-4" />
+                <span>Sensors</span>
+              </TabsTrigger>
 
               <TabsTrigger value="predictions">
                 <ChartNoAxesCombined className="w-7 h-7" />
                 <span>Predictions</span>
-              </TabsTrigger>
-
-              <TabsTrigger value="sensors">
-                <Droplet className="w-4 h-4" />
-                <span>Sensors</span>
               </TabsTrigger>
 
             </TabsList> 
