@@ -44,8 +44,14 @@ const Dashbooard = () => {
 
                 case 'do':
                   valueStr = `${val}ppm`;
-                  warningRanges = [[4.5, 4.9], [12.1, 12.5]];
-                  dangerRanges = [[0, 4.5], [12.5, Infinity]];
+                  warningRanges = [ 
+                    [4.5, 4.9], 
+                    [12.1, 12.5]
+                  ];
+                  dangerRanges = [
+                    [0, 4.5], 
+                    [12.5, Infinity]
+                  ];
                 break;
 
                 case 'temperature':
@@ -78,7 +84,19 @@ const Dashbooard = () => {
 
               case 'tds':
                 valueStr = `${val}ppt`;
+                warningRanges = [
+                  [14.5, 14.9],
+                  [20.1, 20.5]
+                ];
 
+                dangerRanges = [
+                  [-Infinity, 14.5],
+                  [20.5, Infinity]
+                ];
+              break;
+
+              case 'ammonium':
+                valueStr = `${val}ppm`;
                 warningRanges = [
                   [0.1, 0.4],
                   [3.1, 3.5]
@@ -88,42 +106,16 @@ const Dashbooard = () => {
                   [-Infinity, 0.1],
                   [3.5, Infinity]
                 ];
-              break;
-                
-              case 'tds':
-                valueStr = `${val}ppt`;
-                warningRanges = [
-                  [0.1, 0.5],
-                  [50.1, 50.5]
-                ];
-
-                dangerRanges = [
-                  [-Infinity, 0.1],
-                  [50.5, Infinity]
-                ];
-              break;
-
-                case 'ammonium':
-                  valueStr = `${val}ppm`;
-                  warningRanges = [
-                    [0.1, 0.4],
-                    [3.1, 3.5]
-                  ];
-
-                  dangerRanges = [
-                    [-Infinity, 0.1],
-                    [3.5, Infinity]
-                  ];
                 break;
-              }
-              return {
-                ...sensor,
-                value: valueStr,
-                percentage: (val / sensor.maxValue) * 100,
-                warningRanges: warningRanges,
-                dangerRanges: dangerRanges
-              };
-            })
+            }
+            return {
+              ...sensor,
+              value: valueStr,
+              percentage: (val / sensor.maxValue) * 100,
+              warningRanges: warningRanges,
+              dangerRanges: dangerRanges
+            };
+          })
         );
       } catch (err) {
         console.error("Invalid JSON:", event.data);
@@ -141,6 +133,7 @@ const Dashbooard = () => {
       console.log("WebSocket closed");
       setIsConnected(false);
     };
+    
     // socket.onopen = () => console.log("Connected!");
     // socket.onmessage = (event) => console.log("Message:", event.data);
     // socket.onerror = (err) => console.error("WebSocket error:", err);

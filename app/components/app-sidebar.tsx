@@ -7,7 +7,8 @@ import {
     Camera,
     Logs,
     UserCog,
-    CalendarCog
+    CalendarCog,
+    MonitorCheck
 } from 'lucide-react';
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '~/components/ui/sidebar';
@@ -38,6 +39,11 @@ const othersNavItems: NavItem[] = [
     {
         title: 'Crab Logs',
         href: '/page/logs',
+        icon: MonitorCheck,
+    },
+    {
+        title: 'Activity Logs',
+        href: '/page/activity-logs',
         icon: Logs,
     }
 ];

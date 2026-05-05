@@ -2,6 +2,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from './ui/button';
 import type { Crab } from '~/types/crab';
+import type { ActivityLogs } from '~/types/activity-logs';
 
 type SortableHeaderProps = {
   column: any;
@@ -116,4 +117,55 @@ export const DataColumns: ColumnDef<Crab>[] = [
         );
     },
   },
+];
+
+export const ActivityColumns: ColumnDef<ActivityLogs>[] = [
+    {
+        accessorKey: 'id',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="ID" />
+        ),
+        cell: ({ row }) => <div className="font-medium text-center">{row.getValue('id')}</div>,
+    },
+    {
+        accessorKey: 'activity_type',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="Activity Type" />
+        ),
+        cell: ({ row }) => <div className="font-medium text-center">{row.getValue('activity_type')}</div>,
+    },
+    {
+        accessorKey: 'description',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="Description" />
+        ),
+        cell: ({ row }) => <div className="font-medium text-center">{row.getValue('description')}</div>,
+    },
+    {
+        accessorKey: 'value',
+        header: ({ column }) => (
+             <SortableHeader column={column} label="Value" />
+        ),
+        cell: ({ row }) => (
+        <div className="text-center">{(row.getValue('value') as number).toFixed(2)}</div>
+        ),
+    },
+    {
+        accessorKey: 'created_at',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="Date" />
+        ),
+        cell: ({ row }) => {
+            const date = new Date(row.getValue('created_at'));
+            const formatted = date.toLocaleString('en-US', {
+                month: 'short',       // Mar
+                day: 'numeric',       // 22
+                year: 'numeric',      // 2026
+                hour: 'numeric',      // 5
+                minute: '2-digit',    // 50
+                hour12: true          // PM
+            });
+            return <div className="text-center">{formatted}</div>
+        },
+    }
 ];
