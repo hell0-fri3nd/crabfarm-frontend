@@ -46,6 +46,8 @@ export interface SensorData {
     percentage: number;
     key: string;
     maxValue: number;
+    warningRanges?: [number, number][];
+    dangerRanges?: [number, number][];
 }
 
 export type ApiResponse = {

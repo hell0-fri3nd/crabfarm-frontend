@@ -36,40 +36,87 @@ const Dashbooard = () => {
               if (val === undefined) return sensor;
 
               let valueStr = "";
+              let warningRanges = [] as Array<[number, number]>;
+              let dangerRanges = [] as Array<[number, number]>;
+
               // Assign units based on sensor key
               switch(sensor.key.toLowerCase()) {
 
                 case 'do':
                   valueStr = `${val}ppm`;
+                  warningRanges = [ 
+                    [4.5, 4.9], 
+                    [12.1, 12.5]
+                  ];
+                  dangerRanges = [
+                    [0, 4.5], 
+                    [12.5, Infinity]
+                  ];
                 break;
 
                 case 'temperature':
-                  valueStr = `${val}°C`;
-                break;
+                valueStr = `${val}°C`;
 
-                case 'ph':
-                  valueStr = `${val}`;
-                break;
+                warningRanges = [
+                  [24.1, 24.5],
+                  [35.1, 35.5]
+                ];
 
-                case 'tds':
-                  valueStr = `${val}ppt`;
-                break;
-                
-                case 'turbidity':
-                  valueStr = `${val}ppt`;
-                break;
+                dangerRanges = [
+                  [-Infinity, 24.1],
+                  [35.5, Infinity]
+                ];
+              break;
 
-                case 'ammonium':
-                  valueStr = `${val}ppm`;
+              case 'ph':
+                valueStr = `${val}`;
+
+                warningRanges = [
+                  [7.1, 7.4],
+                  [9.1, 9.5]
+                ];
+
+                dangerRanges = [
+                  [-Infinity, 7.1],
+                  [9.5, Infinity]
+                ];
+              break;
+
+              case 'tds':
+                valueStr = `${val}ppt`;
+                warningRanges = [
+                  [14.5, 14.9],
+                  [20.1, 20.5]
+                ];
+
+                dangerRanges = [
+                  [-Infinity, 14.5],
+                  [20.5, Infinity]
+                ];
+              break;
+
+              case 'ammonium':
+                valueStr = `${val}ppm`;
+                warningRanges = [
+                  [0.1, 0.4],
+                  [3.1, 3.5]
+                ];
+
+                dangerRanges = [
+                  [-Infinity, 0.1],
+                  [3.5, Infinity]
+                ];
                 break;
-              }
-              return {
-                ...sensor,
-                value: valueStr,
-                percentage: (val / sensor.maxValue) * 100,
-              };
-            })
-          );
+            }
+            return {
+              ...sensor,
+              value: valueStr,
+              percentage: (val / sensor.maxValue) * 100,
+              warningRanges: warningRanges,
+              dangerRanges: dangerRanges
+            };
+          })
+        );
       } catch (err) {
         console.error("Invalid JSON:", event.data);
       }
@@ -86,6 +133,7 @@ const Dashbooard = () => {
       console.log("WebSocket closed");
       setIsConnected(false);
     };
+    
     // socket.onopen = () => console.log("Connected!");
     // socket.onmessage = (event) => console.log("Message:", event.data);
     // socket.onerror = (err) => console.error("WebSocket error:", err);
@@ -102,20 +150,20 @@ const Dashbooard = () => {
             <p className="text-muted-foreground">Real-time monitoring and Prediction for your crab farming operation</p>
         </div>
       </div>
-      <Tabs defaultValue="predictions">
+      <Tabs defaultValue="sensors">
 
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-0 overflow-x-auto">
 
             <TabsList className="w-full sm:w-1/4 grid grid-cols-2 sm:grid-cols-2">
+              
+              <TabsTrigger value="sensors">
+                <Droplet className="w-4 h-4" />
+                <span>Sensors</span>
+              </TabsTrigger>
 
               <TabsTrigger value="predictions">
                 <ChartNoAxesCombined className="w-7 h-7" />
                 <span>Predictions</span>
-              </TabsTrigger>
-
-              <TabsTrigger value="sensors">
-                <Droplet className="w-4 h-4" />
-                <span>Sensors</span>
               </TabsTrigger>
 
             </TabsList> 
@@ -141,6 +189,8 @@ const Dashbooard = () => {
                       value={sensor.value}
                       rangesDescription={sensor.rangesDescription}
                       percentage={sensor.percentage}
+                      warningRanges={sensor.warningRanges}
+                      dangerRanges={sensor.dangerRanges}
                       />
                     ))}
                   </div>
