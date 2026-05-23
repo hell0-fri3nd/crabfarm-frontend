@@ -21,6 +21,7 @@ export default [
         route("logs", "routes/page/logs.tsx"),
         route("activity-logs", "routes/page/activity-logs.tsx"),
         route("weigh-and-scan", "routes/page/weigh-and-scan.tsx"),
+        route("sensor-logs", "routes/page/sensor-logs.tsx"),
     ]),
     
     route("*", "routes/page-not-found.tsx")

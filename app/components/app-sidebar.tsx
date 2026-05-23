@@ -8,7 +8,8 @@ import {
     Logs,
     UserCog,
     CalendarCog,
-    MonitorCheck
+    MonitorCheck,
+    TrendingUpDown
 } from 'lucide-react';
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '~/components/ui/sidebar';
@@ -45,6 +46,11 @@ const othersNavItems: NavItem[] = [
         title: 'Activity Logs',
         href: '/page/activity-logs',
         icon: Logs,
+    },
+    {
+        title: 'Sensor Logs',
+        href: '/page/sensor-logs',
+        icon: TrendingUpDown,
     }
 ];
 

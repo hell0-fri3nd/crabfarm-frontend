@@ -1,5 +1,4 @@
 import React from 'react'
-import logs from './logs'
 import { DataTable } from '~/components/data-table'
 import { ActivityColumns } from '~/components/data-columns'
 import { getActivityLogs } from '~/api/logs'
