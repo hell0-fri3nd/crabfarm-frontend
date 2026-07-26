@@ -22,6 +22,8 @@ import { useMobileNavigation } from "./hooks/user-mobile-navigations";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./query-client";
 import { Toaster } from "./components/ui/sonner";
+import { TooltipProvider } from "./components/ui/tooltip";
+import { Assistant } from "./components/assistant-ui/assistant";
 
 
 
@@ -102,14 +104,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Provider store={store}>
           <PersistGate loading={loadingMarkup} persistor={persistor}>
             <QueryClientProvider client={queryClient}>
+              <TooltipProvider>
               <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
                 <AuthProvider>
                   <Bubbles count={30}/>
                   <Toaster richColors theme="system"/>
                   {children}
-                  
+                  <Assistant />
                 </AuthProvider>
               </ThemeProvider>
+              </TooltipProvider>
             </QueryClientProvider>
           </PersistGate>
           <ScrollRestoration />
