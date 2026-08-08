@@ -6,6 +6,7 @@ import {
     LayoutGrid,
     Camera,
     Logs,
+    Settings,
     UserCog,
     CalendarCog,
     MonitorCheck,
@@ -60,7 +61,7 @@ const footerNavItems: NavItem[] = [
         title: 'User Management',
         href: '/settings/users-settings',
         icon: UserCog,
-    },
+    }
 ];
 
 const AppSidebar = () => {
