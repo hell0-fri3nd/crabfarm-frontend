@@ -7,5 +7,7 @@ export type Crab = {
   created_at: string;
   group_by: string;
   crab_name: string;
+  batch_id?: number | null;
+  batch_description?: string | null;
 };
 

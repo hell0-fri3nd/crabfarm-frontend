@@ -1,4 +1,4 @@
-// src/routes/ProtectedLayout.tsx
+// src/routes/settings-layout.tsx
 import ProtectedRoutes from '../components/layout/protected-routes';
 import { Outlet } from 'react-router';
 import AppLayout from '~/components/layout/app-layout';
@@ -13,17 +13,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     href: '/page/dashboard',
   },
   {
-    title: 'Config',
-    href: '/page/configuration',
+    title: 'Settings',
+    href: '/settings/users-settings',
   },
-  {
-    title: 'Weigh and Scan',
-    href: '/page/weigh-and-scan',
-  }
-
 ];
 
-export default function PageLayout() {
+export default function SettingsLayout() {
   return (
     <ProtectedRoutes>
       <AppLayout breadcrumbs={breadcrumbs}>
@@ -32,7 +27,6 @@ export default function PageLayout() {
         <Footer />
         <Assistant />
       </AppLayout>
-
     </ProtectedRoutes>
   );
 }

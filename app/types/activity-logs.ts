@@ -3,6 +3,7 @@ export type ActivityLogs = {
   activity_type: string;
   description: string;
   value: number;
+  user_id?: number | null;
+  name?: string | null;
   created_at: string;
 };
-

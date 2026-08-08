@@ -42,9 +42,9 @@ const UserMenuContent = ({ user }: UserMenuContentProps) => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" to="/" onClick={cleanup}>
+                    <Link className="block w-full" to="/settings/account-settings" onClick={cleanup}>
                         <Settings className="mr-2" />
-                        Settings
+                        Account Settings
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuGroup>

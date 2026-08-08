@@ -3,6 +3,7 @@ import { ArrowUpDown } from 'lucide-react';
 import { Button } from './ui/button';
 import type { Crab } from '~/types/crab';
 import type { ActivityLogs } from '~/types/activity-logs';
+import type { SensorLogs } from '~/types/sensor-logs';
 
 type SortableHeaderProps = {
   column: any;
@@ -163,6 +164,58 @@ export const ActivityColumns: ColumnDef<ActivityLogs>[] = [
                 year: 'numeric',      // 2026
                 hour: 'numeric',      // 5
                 minute: '2-digit',    // 50
+                hour12: true          // PM
+            });
+            return <div className="text-center">{formatted}</div>
+        },
+    }
+];
+
+export const SensorColumns: ColumnDef<SensorLogs>[] = [
+    {
+        accessorKey: 'id',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="ID" />
+        ),
+        cell: ({ row }) => <div className="font-medium text-center">{row.getValue('id')}</div>,
+    },
+    {
+        accessorKey: 'sensor_type',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="Sensor Type" />
+        ),
+        cell: ({ row }) => <div className="font-medium text-center">{row.getValue('sensor_type')}</div>,
+    },
+    {
+        accessorKey: 'status',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="Status" />
+        ),
+        cell: ({ row }) => <div className="font-medium text-center">{row.getValue('status')}</div>,
+    },
+    {
+        accessorKey: 'value',
+        header: ({ column }) => (
+             <SortableHeader column={column} label="Value" />
+        ),
+        cell: ({ row }) => (
+        <div className="text-center">{(row.getValue('value') as number).toFixed(2)}</div>
+        ),
+    },
+    {
+        accessorKey: 'created_at',
+        header: ({ column }) => (
+            <SortableHeader column={column} label="Date" />
+        ),
+        cell: ({ row }) => {
+            const date = new Date(row.getValue('created_at'));
+            const formatted = date.toLocaleString('en-US', {
+                month: 'short',       // Mar
+                day: 'numeric',       // 22
+                year: 'numeric',      // 2026
+                hour: 'numeric',      // 5
+                minute: '2-digit',    // 50
+                second: '2-digit',
                 hour12: true          // PM
             });
             return <div className="text-center">{formatted}</div>

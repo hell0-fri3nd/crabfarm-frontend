@@ -37,7 +37,7 @@ import { Link } from "react-router"
       
 const Footer = () => {
   const currentYear = new Date().getFullYear()
-  const version = '1.3.0'
+  const version = '1.5.0'
 
   const socialLinks = [
     {

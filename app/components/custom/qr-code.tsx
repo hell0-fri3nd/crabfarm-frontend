@@ -8,8 +8,9 @@ interface qrDetails {
     id: number | null;
     name: string | null;  
     group_by: string | null;
+    batch_id?: number | null;
 }
-const QRCode = ({id,name,group_by}:qrDetails) => {
+const QRCode = ({id,name,group_by,batch_id = null}:qrDetails) => {
     
     const qrRef = useRef<HTMLDivElement>(null);
     const qrCodeRef = useRef<QRCodeStyling | null>(null);
@@ -24,11 +25,11 @@ const QRCode = ({id,name,group_by}:qrDetails) => {
         }
     }, []);
 
-    const jsonData = JSON.stringify({ id, name, group_by });
+    const jsonData = JSON.stringify({ id, name, group_by, batch_id });
     useEffect(() => {
         if (!qrCodeRef.current) return;
         qrCodeRef.current.update({ data: jsonData });
-    }, [id, name, group_by]);
+    }, [id, name, group_by, batch_id]);
 
     return (
         <div className="inline-block overflow-hidden rounded-xl shadow-lg">

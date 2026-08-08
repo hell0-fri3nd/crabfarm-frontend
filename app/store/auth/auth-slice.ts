@@ -73,12 +73,11 @@ export const pin = createAsyncThunk<User, pinPayload, { rejectValue: string }>(
         try {
 
             const response = await api.post('/auth/pin', { pin });
-            console.log("responses: ", response.data[0].detail)
             const userData: User = {
-                message: response.data[0].detail,
-                user: response.data[0].data.name,
-                email: response.data[0].data.email,
-                roles: response.data[0].data.role,
+                message: response.data.detail,
+                user: response.data.data.name,
+                email: response.data.data.email,
+                roles: response.data.data.role,
             };
 
             return userData;
@@ -86,7 +85,6 @@ export const pin = createAsyncThunk<User, pinPayload, { rejectValue: string }>(
 
         } catch (error: any) {
 
-            console.log(error);
             if (!error.response) {
                 // If there is no response object, it's a network issue
                 const networkErrorMessage = 'Cannot connect to the server. Please check your internet connection or try again later.';
