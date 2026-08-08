@@ -14,11 +14,13 @@ import { storage } from './web-storage';
 import authReducer from './auth/auth-slice';
 import cameraReducer from './camera-slice'
 import crabReducer from './crab-slice'
+import chatReducer from './chat-slice'
 import { statusApi } from './auth/auth-status-slice';
 const rootReducer = combineReducers({
   auth: authReducer,
   camera: cameraReducer,
   crab: crabReducer,
+  chat: chatReducer,
   [statusApi.reducerPath]: statusApi.reducer, // correct way
 })
 const persistConfig = {

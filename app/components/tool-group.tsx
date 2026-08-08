@@ -5,7 +5,7 @@ import {
   useCallback,
   useRef,
   useState,
-  type FC,
+  type ComponentType,
   type PropsWithChildren,
 } from "react";
 import { ChevronDownIcon, LoaderIcon } from "lucide-react";
@@ -196,7 +196,7 @@ function ToolGroupContent({
   );
 }
 
-type ToolGroupComponent = FC<
+type ToolGroupComponent = ComponentType<
   PropsWithChildren<{ startIndex: number; endIndex: number }>
 > & {
   Root: typeof ToolGroupRoot;
@@ -204,9 +204,11 @@ type ToolGroupComponent = FC<
   Content: typeof ToolGroupContent;
 };
 
-const ToolGroupImpl: FC<
-  PropsWithChildren<{ startIndex: number; endIndex: number }>
-> = ({ children, startIndex, endIndex }) => {
+const ToolGroupImpl = ({
+  children,
+  startIndex,
+  endIndex,
+}: PropsWithChildren<{ startIndex: number; endIndex: number }>) => {
   const toolCount = endIndex - startIndex + 1;
 
   return (

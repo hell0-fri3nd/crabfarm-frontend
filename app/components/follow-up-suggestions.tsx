@@ -1,9 +1,8 @@
 "use client";
 
 import { AuiIf, useAuiState, ThreadPrimitive } from "@assistant-ui/react";
-import type { FC } from "react";
 
-export const ThreadFollowupSuggestions: FC = () => {
+export const ThreadFollowupSuggestions = () => {
   const suggestions = useAuiState((s) => s.thread.suggestions);
   return (
     <AuiIf
@@ -17,7 +16,7 @@ export const ThreadFollowupSuggestions: FC = () => {
         {suggestions.map((suggestion, idx) => (
           <ThreadPrimitive.Suggestion
             key={idx}
-            className="aui-thread-followup-suggestion bg-background hover:bg-muted/80 rounded-full border px-3 py-1 text-sm transition-colors ease-in"
+            className="aui-thread-followup-suggestion bg-background hover:bg-muted/80 rounded-full border px-4 py-1.5 text-base transition-colors ease-in"
             prompt={suggestion.prompt}
             method="replace"
             autoSend

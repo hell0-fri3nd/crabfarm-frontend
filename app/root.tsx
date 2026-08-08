@@ -23,7 +23,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./query-client";
 import { Toaster } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
-import { Assistant } from "./components/assistant-ui/assistant";
 
 
 
@@ -95,7 +94,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
         <Meta />
         <Links />
       </head>
@@ -110,7 +109,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   <Bubbles count={30}/>
                   <Toaster richColors theme="system"/>
                   {children}
-                  <Assistant />
                 </AuthProvider>
               </ThemeProvider>
               </TooltipProvider>
